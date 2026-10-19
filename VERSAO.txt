@@ -1,0 +1,4 @@
+FinTrack V6 - backend, indicadores, lembretes e celular
+Base visual: fintrack-github-pages-release-v5-grafico-linha-completo.zip
+Data: 18/10/2026
+Hospedagem: Python com armazenamento persistente. Nao e pacote estatico para GitHub Pages.

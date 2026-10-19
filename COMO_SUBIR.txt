@@ -1,0 +1,49 @@
+FINTRACK — RELEASE GITHUB PAGES V5
+
+ATUALIZAÇÃO DO GRÁFICO DE LINHA
+- Linhas sólidas mais espessas, grade horizontal e escala arredondada.
+- Meses inclinados e legenda à direita no computador; abaixo no celular.
+- Cores da FinTrack mantidas: verde para receitas e vermelho para despesas.
+- Valores calculados com as transações cadastradas, sem dados de demonstração incluídos.
+- Ajuste de largura do dashboard no celular e tooltip que permanece após o toque.
+- Estrutura de armazenamento V4 preservada para ler os dados existentes.
+
+Esta versão foi revisada para funcionar sem backend nas funções principais.
+
+FUNCIONA NO GITHUB PAGES
+- Cadastro e login local por navegador.
+- Escolha de avatar logo após o cadastro.
+- Troca de avatar depois do login em Configurações > Trocar avatar.
+- Receitas e despesas: criar, editar, excluir, filtrar e pesquisar.
+- Lançamentos recorrentes.
+- Categorias personalizadas.
+- Dashboard calculado a partir das transações.
+- Gráficos de linha, barras e pizza.
+- Metas: criar, editar, reservar, retirar, concluir e excluir.
+- Educação: 4 módulos, 20 aulas e 80 atividades, com progresso por conta.
+- Preferências e perfil.
+- Assistente financeiro local e análise local de gastos.
+- Turmas e atribuições em modo local quando as contas são usadas no MESMO navegador.
+- Comprovante: a imagem pode ser carregada, mas sem OCR de servidor; os campos devem ser revisados/preenchidos manualmente.
+
+IMPORTANTE SOBRE GITHUB PAGES
+GitHub Pages é hospedagem estática. Dados ficam no localStorage do navegador.
+Isso significa:
+- os dados não sincronizam automaticamente entre celular e computador;
+- limpar os dados do navegador apaga as informações locais;
+- turmas entre pessoas em dispositivos diferentes e e-mail semanal exigem backend/banco de dados real;
+- OCR real de comprovantes e IA remota também exigem serviço de backend/API.
+
+PUBLICAÇÃO
+1. Extraia o ZIP e envie os arquivos diretamente para a raiz do repositório usado pelo GitHub Pages.
+   Substitua os arquivos da versão anterior; não envie somente o ZIP ou uma pasta contendo o site.
+2. Mantenha .nojekyll na raiz.
+3. Aguarde o GitHub Pages publicar.
+4. Faça Ctrl+F5 no computador ou recarregue a página no celular. Os arquivos app.css e app.js têm versão no endereço para atualizar o cache.
+   Não apague os dados do site/localStorage se quiser manter suas transações e contas existentes.
+5. Para testar o fluxo completo, crie uma conta nova: cadastro -> avatar -> app.
+
+Se o seu repositório está exatamente na V4 enviada, os únicos arquivos de funcionamento alterados são app.html, app.css e app.js.
+O ZIP inclui o site completo para facilitar a publicação. COMO_SUBIR.txt e AUDITORIA_V5.txt documentam esta atualização.
+
+BUILD: github-pages-release-v5-grafico-linha

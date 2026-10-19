@@ -1,0 +1,25 @@
+/* Keep controls reachable with touch, keyboard and device safe areas. */
+html{-webkit-text-size-adjust:100%}
+.mobile-nav-toggle,.nav-scrim{display:none}
+.topbar>div:first-child{display:flex;align-items:center;gap:10px}
+.main,.shell{min-width:0}
+@media(max-width:820px){
+ .side{position:fixed;inset:0 auto 0 0;height:100dvh;width:min(280px,85vw);display:block;transform:translateX(-105%);transition:transform .2s ease;z-index:40;border-top:0;border-right:1px solid var(--line);background:var(--bg)}
+ .side.open{transform:none}.side .brand{display:flex}.side .side-bottom{display:block;position:static;margin-top:20px}.side .nav{display:flex;flex-direction:column;gap:6px}.side .nav button{flex-direction:row;justify-content:flex-start;min-height:46px;font-size:13px;padding:10px 14px}.side .nav svg{flex-shrink:0}
+ .mobile-nav-toggle{display:grid;place-items:center;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;font-size:23px}
+ .nav-scrim.open{display:block;position:fixed;inset:0;border:0;background:#0009;z-index:35}
+ .pagehead{flex-wrap:wrap}.toolbar{flex-wrap:wrap}.pagehead h1{overflow-wrap:anywhere}.table td{word-break:break-word}.formgrid{min-width:0}.topbar #scanBtn{display:none}.content{padding:20px 14px 90px}.three,.two{grid-template-columns:minmax(0,1fr)}
+}
+button,a,[role=button]{touch-action:manipulation}
+button,[role=button]{-webkit-user-select:none;user-select:none}
+.market-panel{margin-top:16px}.market-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:20px 0}
+.market-grid article{display:flex;flex-direction:column;gap:8px;min-width:0}.market-grid strong{font-size:25px;font-variant-numeric:tabular-nums}.market-grid small{color:var(--muted);overflow-wrap:anywhere}.market-grid .market-stale{color:var(--red)}
+.reminder-options{display:flex;flex-wrap:wrap;gap:18px;margin:20px 0}.reminder-options label{display:flex;align-items:center;gap:10px;min-height:44px}.reminder-options input{width:20px;height:20px;accent-color:var(--green)}
+#reminderForm .field{max-width:480px;margin-bottom:18px}#reminderForm small{line-height:1.6}
+.reminder-item{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-left:3px solid var(--green)}.reminder-item.is-read{border-left-color:var(--line)}.reminder-item p{overflow-wrap:anywhere}.reminder-item small{color:var(--muted)}.reminder-item h2{margin:10px 0}.reminder-pagination{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.dialog,.side,.messages{overscroll-behavior:contain}
+@media(pointer:coarse){input:not([type=checkbox]):not([type=radio]),textarea,select,.pagehead .field input{font-size:16px!important}.btn,.mobile-nav-toggle,.chart-picker button{min-height:44px;min-width:44px}button:active{filter:brightness(.9)}}
+@media(max-width:820px){.topbar{height:auto;min-height:67px;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));flex-wrap:wrap;gap:10px}.top-actions{flex-wrap:wrap;gap:7px}.top-actions .btn{min-height:44px;font-size:11px}.mobile-nav-toggle{min-height:44px;min-width:44px}.side{padding-top:calc(20px + env(safe-area-inset-top,0px));padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto}.content{padding-bottom:calc(85px + env(safe-area-inset-bottom,0px))}.dialog{max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto}.market-grid{grid-template-columns:1fr 1fr}.reminder-item{align-items:flex-start;flex-direction:column}.pagehead .field input{font-size:16px}.reminder-options{flex-direction:column}.card,.main,.content,.field{min-width:0}.toast{max-width:calc(100vw - 36px)}.table td{overflow-wrap:anywhere}.table td>*{min-width:0}}
+@media(max-width:380px){.topbar>div:first-child{width:100%}.top-actions{width:100%;justify-content:space-between}.market-grid{gap:12px}.market-grid strong{font-size:22px}}
+
+@media(max-width:820px){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}

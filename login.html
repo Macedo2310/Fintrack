@@ -1,0 +1,247 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Entrar — FinTrack</title><meta name="fintrack-build" content="github-pages-release-v4"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css"><link rel="stylesheet" href="mobile-services.css?v=6"></head><body class="auth-gradient-page">
+<canvas id="gradientWavesBg" class="gradient-waves-bg" aria-hidden="true"></canvas>
+<div class="gradient-waves-vignette" aria-hidden="true"></div>
+<div class="gradient-waves-grain" aria-hidden="true"></div>
+<div class="ambient-grid" aria-hidden="true"></div>
+<main class="authpage"><section class="authbox">
+  <aside class="authart"><div class="brand"><span class="brandmark">✓</span>FinTrack</div><div><h2 style="font-size:36px;margin:0 0 10px">Seu dinheiro.<br>Mais claro.</h2><p class="muted">Entre para organizar suas finanças, acompanhar metas e aprender no seu ritmo.</p><img class="owlbig" src="coruja.gif" alt="FinBot, coruja do FinTrack" style="margin-top:28px"><div class="notice success" style="margin-top:16px">O <b>FinBot</b> agora acompanha o sistema com dicas rápidas, atalhos e orientações visuais.</div></div></aside>
+  <div class="authform">
+    <div class="tabs" style="margin-bottom:26px;width:max-content"><button id="tabLogin" class="active">Entrar</button><button id="tabSignup">Criar conta</button></div>
+
+    <form id="loginForm">
+      <h1>Bem-vindo de volta.</h1><p>Entre para continuar no FinTrack.</p>
+      <div class="field"><label>E-mail</label><input id="loginEmail" type="email" autocomplete="email" required></div>
+      <div class="field" style="margin-top:12px"><label>Senha</label><div style="display:flex;gap:8px"><input id="loginPassword" type="password" autocomplete="current-password" required style="flex:1"><button class="btn" type="button" data-eye="loginPassword">Mostrar</button></div></div>
+      <div class="authlinks"><button type="button" id="forgotOpen">Esqueci minha senha</button><a href="terms.html">Termos</a></div>
+      <button class="btn primary" id="loginSubmit" style="width:100%" type="submit">Entrar</button><div class="status" id="loginStatus"></div>
+    </form>
+
+    <form id="signupForm" class="hidden">
+      <h1>Crie sua conta.</h1><p>Comece sem transações ou metas fictícias.</p>
+      <div class="field"><label>Nome</label><input id="signupName" autocomplete="name" required></div>
+      <div class="field" style="margin-top:12px"><label>E-mail</label><input id="signupEmail" type="email" autocomplete="email" required></div>
+      <div class="field" style="margin-top:12px"><label>Perfil</label><select id="signupRole"><option value="aluno">Aluno</option><option value="professor">Professor</option></select></div><div class="field hidden" id="professorCodeField" style="margin-top:12px"><label>Código de autorização do professor (se exigido pela escola)</label><input id="signupProfessorCode" autocomplete="off" maxlength="120"><small class="muted">Se o servidor não exigir código, deixe em branco.</small></div>
+      <div class="field" style="margin-top:12px"><label>Senha</label><input id="signupPassword" type="password" autocomplete="new-password" minlength="8" required><small class="muted">Mínimo de 8 caracteres, combinando letras e números.</small></div>
+      <div class="field" style="margin-top:12px"><label>Confirmar senha</label><input id="signupConfirm" type="password" autocomplete="new-password" required></div>
+      <label style="display:flex;gap:8px;margin-top:14px;font-size:12px"><input id="signupTerms" type="checkbox"> <span>Li e aceito os <a href="terms.html" style="color:var(--green)">Termos</a> e a <a href="privacy.html" style="color:var(--green)">Política de Privacidade</a>.</span></label>
+      <button class="btn primary" id="signupSubmit" style="width:100%;margin-top:16px" type="submit">Criar minha conta</button><div class="status" id="signupStatus"></div>
+    </form>
+
+    <form id="forgotForm" class="hidden">
+      <h1>Recuperar senha.</h1><p>Informe seu e-mail. A mensagem de resposta não confirma publicamente se existe uma conta.</p>
+      <div class="field"><label>E-mail</label><input id="forgotEmail" type="email" autocomplete="email" required></div>
+      <button class="btn primary" id="forgotSubmit" style="width:100%;margin-top:16px" type="submit">Enviar instruções</button>
+      <button class="btn ghost" id="backLogin" style="width:100%;margin-top:8px" type="button">Voltar ao login</button><div class="status" id="forgotStatus"></div>
+    </form>
+  </div>
+</section></main>
+<script>
+const $=s=>document.querySelector(s), qs=new URLSearchParams(location.search);
+const forms={login:$('#loginForm'),signup:$('#signupForm'),forgot:$('#forgotForm')};
+function mode(m){Object.values(forms).forEach(f=>f.classList.add('hidden'));forms[m].classList.remove('hidden');$('#tabLogin').classList.toggle('active',m==='login');$('#tabSignup').classList.toggle('active',m==='signup')}
+$('#tabLogin').onclick=()=>mode('login');$('#tabSignup').onclick=()=>mode('signup');$('#signupRole').onchange=()=>$('#professorCodeField').classList.toggle('hidden',$('#signupRole').value!=='professor');$('#forgotOpen').onclick=()=>{ $('#forgotEmail').value=$('#loginEmail').value;mode('forgot')};$('#backLogin').onclick=()=>mode('login');
+document.querySelectorAll('[data-eye]').forEach(b=>b.onclick=()=>{const i=document.getElementById(b.dataset.eye);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'Mostrar':'Ocultar'});
+async function post(url,body,extraHeaders={}){
+  const r=await fetch(url,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json',...extraHeaders},body:JSON.stringify(body)});
+  let j={};try{j=await r.json()}catch{}
+  if(!r.ok)throw new Error(typeof j.detail==='string'?j.detail:'Não foi possível concluir a solicitação.');
+  return j;
+}
+$('#loginForm').onsubmit=async e=>{e.preventDefault();const b=$('#loginSubmit'),s=$('#loginStatus');s.textContent='';b.disabled=true;b.textContent='Entrando...';try{const j=await post('/api/auth/login',{email:$('#loginEmail').value,password:$('#loginPassword').value});location.href=j.next}catch(err){s.textContent=err.message}finally{b.disabled=false;b.textContent='Entrar'}};
+$('#signupForm').onsubmit=async e=>{e.preventDefault();const b=$('#signupSubmit'),s=$('#signupStatus');s.textContent='';if($('#signupPassword').value!==$('#signupConfirm').value){s.textContent='As senhas não coincidem.';return}b.disabled=true;b.textContent='Criando...';try{const j=await post('/api/auth/register',{name:$('#signupName').value,email:$('#signupEmail').value,password:$('#signupPassword').value,role:$('#signupRole').value,terms:$('#signupTerms').checked},{'X-Professor-Signup-Code':$('#signupProfessorCode').value});location.href=j.next}catch(err){s.textContent=err.message}finally{b.disabled=false;b.textContent='Criar minha conta'}};
+$('#forgotForm').onsubmit=async e=>{e.preventDefault();const b=$('#forgotSubmit'),s=$('#forgotStatus');s.textContent='';b.disabled=true;b.textContent='Verificando...';try{const j=await post('/api/auth/forgot',{email:$('#forgotEmail').value});s.style.color='var(--green)';s.textContent=j.message;if(j.reset_url){const a=document.createElement('a');a.href=j.reset_url;a.className='btn primary';a.style.cssText='display:flex;justify-content:center;margin-top:12px';a.textContent='Definir nova senha';s.append(document.createElement('br'),a)}}catch(err){s.style.color='';s.textContent=err.message}finally{b.disabled=false;b.textContent='Recuperar acesso'}};
+mode(qs.get('mode')==='signup'?'signup':'login');
+</script>
+<script>
+(() => {
+  const canvas = document.getElementById('gradientWavesBg');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+
+  // Parâmetros adaptados diretamente do componente GradientWaves solicitado.
+  const config = {
+    horizonColor: '#024828',
+    waveColor: '#05773c',
+    crestColor: '#10B981',
+    speed: 0.25,
+    amplitude: 2.5,
+    waveScale: 0.6,
+    waveRatio: 0.8,
+    swell: 35,
+    turbulence: 20,
+    tilt: 1.11,
+    zoom: 1,
+    height: 5.5,
+    fogDepth: 15,
+    detail: 'medium',
+    brightness: 1,
+    opacity: 1,
+    mouseInteraction: true,
+    parallaxStrength: 0.5,
+    grain: true,
+    grainIntensity: 0.05
+  };
+
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rows = config.detail === 'high' ? 72 : config.detail === 'low' ? 32 : 52;
+  const cols = config.detail === 'high' ? 110 : config.detail === 'low' ? 54 : 82;
+
+  let w = 0, h = 0, dpr = 1, raf = 0;
+  let targetMX = 0, targetMY = 0, mx = 0, my = 0;
+  let start = performance.now();
+
+  const hexToRgb = hex => {
+    const v = parseInt(hex.slice(1), 16);
+    return { r:(v>>16)&255, g:(v>>8)&255, b:v&255 };
+  };
+  const mix = (a,b,t) => ({
+    r: Math.round(a.r + (b.r-a.r)*t),
+    g: Math.round(a.g + (b.g-a.g)*t),
+    b: Math.round(a.b + (b.b-a.b)*t)
+  });
+  const rgba = (c,a) => `rgba(${c.r},${c.g},${c.b},${a})`;
+
+  const horizonRGB = hexToRgb(config.horizonColor);
+  const waveRGB = hexToRgb(config.waveColor);
+  const crestRGB = hexToRgb(config.crestColor);
+
+  function resize() {
+    dpr = Math.min(devicePixelRatio || 1, 1.6);
+    w = innerWidth;
+    h = innerHeight;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw(reducedMotion ? 0 : (performance.now()-start)/1000);
+  }
+
+  function waveY(xNorm, depth, t) {
+    const scale = config.waveScale;
+    const primary = Math.sin(
+      (xNorm * 7.2 * scale) +
+      (t * config.speed * 2.7) +
+      (depth * 3.4)
+    );
+    const secondary = Math.sin(
+      (xNorm * 15.0 * scale * config.waveRatio) -
+      (t * config.speed * 1.35) +
+      (depth * 7.2)
+    ) * 0.34;
+    const turbulence = Math.sin(
+      xNorm * 27 +
+      depth * 11 -
+      t * config.speed * 0.72
+    ) * (config.turbulence / 100) * 0.52;
+    const swell = Math.sin(depth * Math.PI) * (config.swell / 100);
+    return (primary + secondary + turbulence) * (0.55 + swell);
+  }
+
+  function draw(t) {
+    ctx.clearRect(0,0,w,h);
+
+    const horizon = h * 0.315 + my * 18 * config.parallaxStrength;
+    const bg = ctx.createLinearGradient(0,0,0,h);
+    bg.addColorStop(0, '#010705');
+    bg.addColorStop(.27, '#012718');
+    bg.addColorStop(.49, config.horizonColor);
+    bg.addColorStop(.72, '#022317');
+    bg.addColorStop(1, '#010806');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,w,h);
+
+    // Horizon bloom.
+    const glow = ctx.createRadialGradient(
+      w*(.56 + mx*.03), horizon, 0,
+      w*(.56 + mx*.03), horizon, Math.max(w,h)*.56
+    );
+    glow.addColorStop(0, 'rgba(16,185,129,.20)');
+    glow.addColorStop(.22, 'rgba(5,119,60,.10)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0,0,w,h);
+
+    mx += (targetMX-mx)*0.035;
+    my += (targetMY-my)*0.035;
+
+    for (let r=rows-1; r>=0; r--) {
+      const depth = r/(rows-1);          // 0 horizonte, 1 frente
+      const perspective = Math.pow(depth, 1.72);
+      const baseY = horizon + perspective * h * .82 * config.zoom;
+      const rowAmp = (5 + perspective * 40) * config.amplitude / 2.5;
+      const fog = Math.max(0, Math.min(1, (depth * (100/config.fogDepth))));
+      const alpha = (0.045 + perspective*.30) * fog * config.opacity;
+      const colorMix = Math.min(1, .18 + perspective*.82);
+      const lineColor = mix(horizonRGB, waveRGB, colorMix);
+
+      ctx.beginPath();
+      for (let c=0;c<=cols;c++) {
+        const xn=c/cols;
+        const centered=xn-.5;
+        const parallaxX = mx * (1-depth) * 24 * config.parallaxStrength;
+        const x = xn*w + parallaxX;
+        const wave = waveY(xn + mx*.02, depth, t);
+        const tilt = centered * config.tilt * (5 + perspective*16);
+        const y = baseY + wave*rowAmp + tilt + my*(1-depth)*12*config.parallaxStrength;
+        if(c===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.lineWidth = .65 + perspective*1.1;
+      ctx.strokeStyle = rgba(lineColor, alpha * config.brightness);
+      ctx.stroke();
+
+      // Brilho discreto nas cristas das linhas próximas.
+      if (depth > .50 && r % 4 === 0) {
+        ctx.beginPath();
+        for (let c=0;c<=cols;c++) {
+          const xn=c/cols;
+          const centered=xn-.5;
+          const x=xn*w + mx*(1-depth)*24*config.parallaxStrength;
+          const wave=waveY(xn + mx*.02, depth, t);
+          const crest=Math.max(0,wave-.46);
+          const tilt=centered*config.tilt*(5+perspective*16);
+          const y=baseY + wave*rowAmp + tilt + my*(1-depth)*12*config.parallaxStrength;
+          if(c===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.lineWidth=.6;
+        ctx.strokeStyle=rgba(crestRGB, .035 + perspective*.06);
+        ctx.stroke();
+      }
+    }
+
+    // Linhas convergentes reforçam a sensação de profundidade.
+    const vanX = w*(.52 + mx*.025);
+    for(let c=0;c<=22;c++){
+      const xBottom=(c/22)*w;
+      ctx.beginPath();
+      ctx.moveTo(vanX,horizon);
+      ctx.lineTo(xBottom,h);
+      ctx.strokeStyle='rgba(16,185,129,.028)';
+      ctx.lineWidth=.7;
+      ctx.stroke();
+    }
+  }
+
+  function loop(now){
+    draw((now-start)/1000);
+    raf=requestAnimationFrame(loop);
+  }
+
+  if(config.mouseInteraction){
+    addEventListener('pointermove', e => {
+      targetMX=(e.clientX/innerWidth-.5)*2;
+      targetMY=(e.clientY/innerHeight-.5)*2;
+    }, {passive:true});
+    addEventListener('pointerleave', () => {
+      targetMX=0; targetMY=0;
+    }, {passive:true});
+  }
+
+  addEventListener('resize', resize, {passive:true});
+  resize();
+  if(!reducedMotion) raf=requestAnimationFrame(loop);
+})();
+</script>
+
+</body></html>

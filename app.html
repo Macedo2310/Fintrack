@@ -1,0 +1,194 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><title>FinTrack</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css?v=6"><link rel="stylesheet" href="mobile-services.css?v=6"></head><body>
+<div class="ambient-grid" aria-hidden="true"></div>
+<div class="shell">
+<button class="nav-scrim" id="navScrim" aria-label="Fechar navegação" tabindex="-1"></button><aside class="side" id="appNavigation">
+  <div class="brand"><span class="brandmark">✓</span>FinTrack</div>
+  <nav class="nav" aria-label="Área privada">
+    <button data-page="dashboard" class="active"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>Dashboard</button>
+    <button data-page="transactions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h13M16 3l4 4-4 4M17 17H4M8 13l-4 4 4 4"/></svg>Transações</button>
+    <button data-page="goals"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg>Metas</button>
+    <button data-page="education"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5Z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Educação</button>
+    <button data-page="finbot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/><path d="M19 17v4M17 19h4"/></svg>IA financeira</button>
+    <button data-page="classes"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.5a3.5 3.5 0 0 1 0 7M18 14.2c2.200.6 3.500 2.400 3.500 5.800"/></svg>Turmas</button>
+    <button data-page="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Configurações</button>
+  </nav>
+  <div class="side-bottom"><div class="userbox"><span class="av" id="sideAvatar" aria-hidden="true"></span><div><b id="sideName">...</b><small id="sideRole">...</small></div></div><button id="logout" class="btn ghost" style="width:100%">Sair</button></div>
+</aside>
+
+<div class="main">
+<header class="topbar"><div><button class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Abrir navegação" aria-controls="appNavigation" aria-expanded="false">☰</button><b id="topTitle">Dashboard</b></div><div class="top-actions"><button class="btn" id="scanBtn">Escanear</button><button class="btn primary" id="newTxTop">+ Nova transação</button></div></header>
+<main class="content" id="workspace">
+
+<section id="page-dashboard" class="page active">
+  <div class="pagehead"><div><h1>Visão financeira</h1><p>Resumo baseado apenas nos seus registros.</p></div><div class="toolbar"><div class="field"><label>Início</label><input id="dashStart" type="date"></div><div class="field"><label>Fim</label><input id="dashEnd" type="date"></div><button class="btn" id="dashApply">Atualizar</button></div></div>
+  <div class="card hero-d" id="heroD"><div class="hd-l"><small id="hdGreet"></small><h2 id="hdTitle">Seu painel financeiro</h2><p class="muted" id="hdSub"></p><div class="hd-actions"><button class="btn primary" id="hdAdd">+ Nova transação</button><button class="btn" id="hdGoal">Criar meta</button></div></div><div class="hd-r"><div class="ring2" id="hdRing" style="--p:0"><span id="hdRingV">0%</span></div><small>Taxa de poupança</small></div></div>
+  <div class="chips" id="hdChips"></div>
+  <div class="grid metrics" id="metrics">
+    <div class="card metric"><span>Saldo total</span><strong id="mBalance">—</strong></div>
+    <div class="card metric good"><span>Receitas</span><strong id="mIncome">—</strong></div>
+    <div class="card metric bad"><span>Despesas</span><strong id="mExpense">—</strong></div>
+    <div class="card metric"><span>Resultado</span><strong id="mResult">—</strong></div>
+    <div class="card metric"><span>Reservado</span><strong id="mReserved">—</strong></div>
+    <div class="card metric"><span>Disponível</span><strong id="mAvailable">—</strong></div>
+  </div>
+  <div class="card finance-chart-card" style="margin-top:14px">
+    <div class="finance-chart-head">
+      <div>
+        <h2>Gráficos financeiros</h2>
+        <p class="muted" id="financeChartDescription">Compare receitas e despesas mês a mês.</p>
+      </div>
+      <div class="chart-picker" id="chartPicker" role="group" aria-label="Escolher tipo de gráfico">
+        <button type="button" class="active" data-chart="line" aria-pressed="true"><span class="chart-icon line-icon" aria-hidden="true"></span>Linha</button>
+        <button type="button" data-chart="bar" aria-pressed="false"><span class="chart-icon bar-icon" aria-hidden="true"></span>Barras</button>
+        <button type="button" data-chart="pie" aria-pressed="false"><span class="chart-icon pie-icon" aria-hidden="true"></span>Pizza</button>
+      </div>
+    </div>
+    <div class="finance-chart-body" id="financeChartBody" data-chart="line">
+    <div class="finance-chart-stage" id="financeChartStage">
+      <canvas id="financeChart" role="img" aria-label="Gráfico financeiro do usuário"></canvas>
+      <div class="chart-tooltip" id="financeChartTooltip" aria-hidden="true"></div>
+      <div class="chart-empty hidden" id="financeChartEmpty">
+        <b>Seus gráficos aparecerão aqui.</b>
+        <span>Adicione transações para começar a visualizar sua evolução financeira.</span>
+        <button class="btn primary small" type="button" id="chartEmptyAdd">Adicionar transação</button>
+      </div>
+    </div>
+    <div class="chart-legend" id="financeChartLegend" aria-live="polite"></div>
+    </div>
+    <div class="chart-hint"><span class="chart-spark" aria-hidden="true"></span> Passe o mouse ou toque no gráfico para ver os valores. Sua preferência fica salva na conta.</div>
+  </div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>Transações recentes</h2><div id="recentList"></div></div>
+    <div class="card"><h2>Resumo das metas</h2><div id="dashGoals"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><div style="display:flex;justify-content:space-between;gap:14px;align-items:center"><div><h2 style="margin-bottom:5px">Análise inteligente</h2><p class="muted">O FinBot analisa somente os agregados necessários do período informado.</p></div><button class="btn" id="analyzeSpending">Analisar meus gastos</button></div><div id="analysisBox" style="margin-top:12px"></div></div>
+</section>
+
+<section id="page-transactions" class="page">
+  <div class="pagehead"><div><h1>Transações</h1><p>Busque, filtre, edite ou exclua seus próprios lançamentos.</p></div><button class="btn primary" id="newTxPage">+ Nova transação</button></div>
+  <div class="card">
+    <div class="toolbar">
+      <div class="tabs" id="txTabs"><button class="active" data-type="">Todos</button><button data-type="receita">Receitas</button><button data-type="despesa">Despesas</button></div>
+      <div class="field"><label>Busca</label><input id="txSearch" placeholder="Descrição ou categoria"></div>
+      <div class="field"><label>Início</label><input id="txStart" type="date"></div><div class="field"><label>Fim</label><input id="txEnd" type="date"></div>
+      <div class="field"><label>Ordenação</label><select id="txSort"><option value="date_desc">Mais recentes</option><option value="date_asc">Mais antigas</option></select></div>
+      <button class="btn" id="txApply">Aplicar</button><button class="btn ghost" id="txClear">Limpar filtros</button>
+    </div>
+    <div id="txSummary" class="notice" style="margin-bottom:12px"></div>
+    <div class="tablewrap"><table class="table"><thead><tr><th>Descrição</th><th>Categoria</th><th>Data</th><th>Tipo</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="txBody"></tbody></table></div>
+    <div id="txEmpty" class="empty hidden"><b>Nenhum registro encontrado</b>Revise os filtros ou adicione sua primeira transação.</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px"><span class="muted" id="txCount"></span><div><button class="btn small" id="txPrev">Anterior</button> <button class="btn small" id="txNext">Próxima</button></div></div>
+  </div>
+</section>
+
+<section id="page-goals" class="page">
+  <div class="pagehead"><div><h1>Metas</h1><p>Reservas reduzem o saldo disponível, não o saldo total.</p></div><button class="btn primary" id="newGoalBtn">+ Nova meta</button></div>
+  <div id="goalsGrid" class="grid three"></div>
+  <div id="goalsEmpty" class="empty hidden"><b>Você ainda não criou metas.</b><button class="btn primary" id="firstGoalBtn" style="margin-top:12px">Criar primeira meta</button></div>
+</section>
+
+<section id="page-education" class="page">
+  <div class="pagehead"><div><h1>Educação</h1><p>Curso em 4 níveis, com aulas curtas, atividades interativas e correção comentada. Seu progresso fica salvo.</p></div></div>
+  <div id="eduTop"></div>
+  <div id="modules" class="trail"></div>
+  <div id="lessonView" class="hidden"></div>
+  <p class="source-note">Conteúdo introdutório. Para informações que mudam com o tempo, consulte Banco Central do Brasil, Tesouro Direto e Portal do Investidor (CVM) antes de tomar decisões.</p>
+</section>
+
+<section id="page-finbot" class="page">
+  <div class="pagehead"><div><h1>FinBot</h1><p>Converse com a IA sem expor chaves no navegador.</p></div></div>
+  <div class="chat">
+    <aside class="chat-side"><button class="btn primary" id="newConversation" style="width:100%;margin-bottom:12px">Nova conversa</button><input class="input" id="convSearch" placeholder="Pesquisar histórico" style="width:100%;margin-bottom:10px"><div id="conversationList"></div></aside>
+    <div class="chat-main">
+      <div class="chat-head"><img class="owl" src="coruja.gif" alt="FinBot"><div style="min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b>FinBot</b><span class="ai-status" id="aiStatus"><i></i><span>Verificando IA…</span></span></div><div class="muted" style="font-size:11px">Educação financeira • não movimenta dinheiro • chave protegida no servidor</div></div></div>
+      <div><div id="messages" class="messages"><div class="bubble assistant">Oi! Eu sou o FinBot. Posso explicar conceitos, ajudar a organizar ideias e analisar seus registros quando você pedir.</div></div>
+      <div class="suggestions" id="suggestions"><button>O que é Tesouro Direto?</button><button>Como economizar sendo estudante?</button><button>Explique a regra 50/30/20.</button><button>O que são fundos imobiliários?</button><button>Analise meus gastos.</button></div></div>
+      <div class="composer"><textarea class="input" id="chatInput" placeholder="Digite sua mensagem..."></textarea><button class="btn primary" id="sendMessage">Enviar</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="page-classes" class="page">
+  <div class="pagehead"><div><h1>Turmas</h1><p id="classesIntro">Carregando...</p></div><button id="createClassBtn" class="btn primary hidden">+ Criar turma</button></div>
+  <div id="studentJoin" class="card hidden" style="margin-bottom:14px"><h2>Entrar em uma turma</h2><div class="toolbar"><div class="field"><label>Código</label><input id="classCode" maxlength="20" placeholder="ABC123"></div><button class="btn" id="previewClass">Verificar código</button></div><div id="classPreview"></div></div>
+  <div id="classesGrid" class="grid three"></div>
+  <div class="card" style="margin-top:14px"><h2>Atividades atribuídas</h2><div id="assignmentsList"></div></div>
+</section>
+
+<section id="page-settings" class="page">
+  <div class="pagehead"><div><h1>Configurações</h1><p>Perfil, aparência, notificações e privacidade.</p></div></div>
+  <div class="grid two">
+    <div class="card"><h2>Perfil</h2><div class="profile-av"><span class="av" id="profileAvatar" aria-hidden="true"></span><div><a class="btn small" href="avatar.html?edit=1">Trocar avatar</a><div class="muted" style="font-size:12px;margin-top:6px">Use uma arte do FinTrack ou sua foto.</div></div></div><div class="field"><label>Nome</label><input id="profileName"></div><div class="field" style="margin-top:12px"><label>E-mail</label><input id="profileEmail" disabled></div><button class="btn primary" id="saveProfile" style="margin-top:14px">Salvar perfil</button><div id="profileStatus" class="status"></div></div>
+    <div class="card"><h2>Aparência e notificações</h2><div class="switchrow"><div><b>Tema claro</b><div class="muted">Aplicado imediatamente e salvo.</div></div><button class="switch" id="themeSwitch" aria-label="Alternar tema claro" aria-pressed="false"><i></i></button></div><div class="switchrow"><div><b>Dicas financeiras</b></div><button class="switch" id="tipsSwitch" aria-label="Ativar ou desativar dicas financeiras" aria-pressed="false"><i></i></button></div><div class="switchrow"><div><b>Alertas de metas</b></div><button class="switch" id="goalsSwitch" aria-label="Ativar ou desativar alertas de metas" aria-pressed="false"><i></i></button></div><div class="switchrow"><div><b>Resumo semanal por e-mail</b><div class="muted">Depende da infraestrutura de e-mail.</div></div><button class="switch" id="weeklySwitch" aria-label="Ativar ou desativar resumo semanal por e-mail" aria-pressed="false"><i></i></button></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><h2>Privacidade por turma</h2><p class="muted">Desativado por padrão. Ao ativar, compartilhe apenas resumos autorizados com o professor daquela turma. Comprovantes e conversas privadas nunca entram nesse fluxo.</p><div id="privacyClasses" style="margin-top:12px"></div></div>
+  <div id="deploymentNotice" class="notice hidden" style="margin-top:14px"></div>
+  <div class="card mobile-account-actions" style="margin-top:14px">
+    <h2>Sessão</h2><p class="muted">Encerre sua sessão neste dispositivo.</p>
+    <button class="btn danger" id="logoutSettings" type="button" style="margin-top:12px">Sair da conta</button>
+  </div>
+</section>
+
+</main></div></div>
+
+<div class="modal" id="txModal"><div class="dialog"><div class="dialog-head"><h2 id="txModalTitle">Nova transação</h2><button class="close" data-close="txModal" aria-label="Fechar">×</button></div>
+<form id="txForm"><input id="txId" type="hidden"><div class="formgrid">
+  <div class="full"><div class="tabs" id="txTypeTabs"><button type="button" class="active" data-value="despesa">Despesa</button><button type="button" data-value="receita">Receita</button></div></div>
+  <div class="field"><label>Categoria</label><div style="display:flex;gap:7px"><select id="txCategory" required style="flex:1;min-width:0"></select><button class="btn small" id="newCategoryBtn" type="button" aria-label="Criar categoria personalizada">+ Nova</button></div></div><div class="field"><label>Valor</label><input id="txValue" inputmode="decimal" placeholder="0,00" required></div>
+  <div class="field full"><label>Descrição</label><input id="txDescription" maxlength="160" required></div><div class="field"><label>Data</label><input id="txDate" type="date" required></div>
+  <div class="field full"><label>Observação (opcional)</label><textarea id="txNote"></textarea></div>
+  <label class="full" style="display:flex;gap:8px;align-items:center"><input id="txRecurring" type="checkbox"> Despesa/receita recorrente</label>
+  <div id="recurrenceFields" class="full hidden"><div class="formgrid"><div class="field"><label>Frequência</label><select id="recurrenceFrequency"><option value="semanal">Semanal</option><option value="mensal" selected>Mensal</option><option value="anual">Anual</option></select></div><div class="field"><label>Data de início</label><input id="recurrenceStart" type="date"></div><div class="field"><label>Próxima ocorrência</label><input id="recurrenceNext" type="text" disabled value="—"></div><div class="field"><label>Encerramento (opcional)</label><input id="recurrenceEnd" type="date"></div><div class="notice full">As ocorrências são geradas pelo backend enquanto o servidor estiver ativo. Em produção com múltiplas instâncias, use um worker/agendador dedicado.</div></div></div>
+</div><div id="txFormStatus" class="status"></div><div class="form-actions"><button type="button" class="btn ghost" data-close="txModal">Cancelar</button><button id="txSubmit" class="btn primary" type="submit">Adicionar transação</button></div></form></div></div>
+
+<div class="modal" id="goalModal"><div class="dialog"><div class="dialog-head"><h2 id="goalModalTitle">Nova meta</h2><button class="close" data-close="goalModal" aria-label="Fechar">×</button></div><form id="goalForm"><input id="goalId" type="hidden"><div class="formgrid"><div class="field full"><label>Título</label><input id="goalTitle" required></div><div class="field full"><label>Descrição (opcional)</label><textarea id="goalDescription"></textarea></div><div class="field"><label>Valor-alvo</label><input id="goalTarget" placeholder="0,00" required></div><div class="field"><label>Prazo</label><input id="goalDeadline" type="date" required></div></div><div id="goalStatus" class="status"></div><div class="form-actions"><button type="button" class="btn ghost" data-close="goalModal">Cancelar</button><button class="btn primary">Salvar meta</button></div></form></div></div>
+
+<div class="modal" id="amountModal"><div class="dialog" style="width:min(440px,100%)"><div class="dialog-head"><h2 id="amountTitle">Reservar valor</h2><button class="close" data-close="amountModal" aria-label="Fechar">×</button></div><div class="field"><label>Valor</label><input id="amountValue" placeholder="0,00"></div><div id="amountStatus" class="status"></div><div class="form-actions"><button class="btn ghost" data-close="amountModal">Cancelar</button><button class="btn primary" id="amountConfirm">Confirmar</button></div></div></div>
+
+<div class="modal" id="scanModal"><div class="dialog"><div class="dialog-head"><h2>Escanear comprovante</h2><button class="close" data-close="scanModal" aria-label="Fechar">×</button></div><p class="muted">Envie uma imagem de um comprovante para identificar os dados e revisar antes de salvar.</p><div class="field" style="margin-top:14px"><label>Imagem</label><input id="receiptFile" type="file" accept="image/jpeg,image/png,image/webp" capture="environment"></div><img id="receiptPreview" class="hidden" alt="Prévia do comprovante" style="max-width:100%;max-height:280px;border-radius:14px;margin-top:12px"><div class="form-actions"><button class="btn" id="receiptAnalyze">Analisar comprovante</button></div><div id="receiptStatus" class="notice" style="margin-top:12px">Nada é salvo como transação até você revisar e confirmar. O FinTrack nunca pede senhas bancárias.</div></div></div>
+
+<div class="modal" id="classModal"><div class="dialog"><div class="dialog-head"><h2>Criar turma</h2><button class="close" data-close="classModal" aria-label="Fechar">×</button></div><div class="field"><label>Nome</label><input id="className"></div><div class="field" style="margin-top:12px"><label>Descrição</label><textarea id="classDescription"></textarea></div><div id="classStatus" class="status"></div><div class="form-actions"><button class="btn ghost" data-close="classModal">Cancelar</button><button class="btn primary" id="classCreateConfirm">Criar turma</button></div></div></div>
+
+
+<div class="mascot has-tip" id="mascot">
+  <div class="mascot-tip" id="mascotTip">Precisa de ajuda rápida?</div>
+  <div class="mascot-panel" id="mascotPanel" aria-live="polite">
+    <div class="mascot-head">
+      <div class="mascot-title">
+        <img class="mascot-mini" src="coruja.gif" alt="FinBot">
+        <div><b>FinBot</b><div class="muted" style="font-size:11px">guia rápido do FinTrack</div></div>
+      </div>
+      <button class="mascot-close" id="mascotClose" type="button" aria-label="Fechar ajuda">×</button>
+    </div>
+    <p class="mascot-text" id="mascotText">Oi! Eu posso te orientar pelo site.</p>
+    <div class="mascot-actions" id="mascotActions"></div>
+  </div>
+  <button class="mascot-toggle" id="mascotToggle" type="button" aria-label="Abrir ajuda do FinBot" aria-expanded="false">
+    <span class="mascot-ring" aria-hidden="true"></span>
+    <img src="coruja.gif" alt="FinBot">
+    <span class="mascot-badge" aria-hidden="true"></span>
+  </button>
+</div>
+
+<div class="modal" id="categoryModal" aria-hidden="true"><div class="dialog" style="max-width:460px">
+  <div class="dialog-head"><h2>Nova categoria</h2><button class="close" data-close="categoryModal" aria-label="Fechar">×</button></div>
+  <div class="field"><label>Nome da categoria</label><input id="categoryName" maxlength="50" placeholder="Ex.: Material escolar"></div>
+  <div class="notice" id="categoryTypeNotice" style="margin-top:12px"></div>
+  <div id="categoryStatus" class="status"></div>
+  <div class="form-actions"><button class="btn ghost" data-close="categoryModal" type="button">Cancelar</button><button class="btn primary" id="saveCategoryBtn" type="button">Criar categoria</button></div>
+</div></div>
+
+<div class="modal" id="financialSummaryModal" aria-hidden="true">
+  <div class="dialog">
+    <div class="dialog-head"><div><h2>Resumo financeiro autorizado</h2><p class="muted" id="financialSummaryPeriod"></p></div><button class="close" data-close="financialSummaryModal" aria-label="Fechar">×</button></div>
+    <div class="notice">Mostramos apenas valores agregados de alunos que ativaram o compartilhamento nesta turma. Comprovantes, conversas e descrições individuais não são exibidos.</div>
+    <div class="tablewrap" style="margin-top:12px">
+      <table class="table"><thead><tr><th>Aluno</th><th>Receitas</th><th>Despesas</th><th>Resultado</th><th>Registros</th></tr></thead><tbody id="financialSummaryBody"></tbody></table>
+    </div>
+    <div id="financialSummaryEmpty" class="empty hidden"><b>Nenhum aluno autorizou o compartilhamento</b>O consentimento é individual e fica desativado por padrão.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js?v=6"></script>
+<script src="services.js?v=6"></script><script src="accessibility.js?v=6"></script></body></html>

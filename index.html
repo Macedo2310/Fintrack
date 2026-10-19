@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FinTrack — Aprenda a cuidar da sua grana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080808;--sf:#111;--el:#171717;--bd:#292929;--tx:#F7F7F7;--mu:#B3B3B3;--lime:#1DB954;--lime2:#1ED760;--lil:#B9A5FF;--blu:#8FC4FF;--ros:#FF9EC4;--red:#FF6B6B;--e:cubic-bezier(.16,1,.3,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#080808}}
+:root[data-theme=dark]{--bg:#080808}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 90px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Manrope,Inter,system-ui,sans-serif;font-size:17px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px;border-radius:8px}
+.w{max-width:1200px;margin:0 auto;padding:0 24px}
+h1,h2,h3{font-weight:600;letter-spacing:-.03em;line-height:1.05;margin:0}
+h1{font-size:clamp(34px,6.4vw,72px)}h2{font-size:clamp(28px,4.4vw,52px)}
+p{color:var(--mu);margin:0}.lead{font-size:clamp(16px,1.6vw,20px);max-width:600px;margin:24px auto 0}
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:0 28px;border-radius:999px;font-weight:600;border:1px solid transparent;cursor:pointer;font:inherit;font-weight:600;transition:background .2s,transform .2s}
+.btn.p{background:var(--lime);color:#080808}.btn.p:hover{background:var(--lime2);transform:translateY(-1px)}
+.btn.g{color:var(--mu)}.btn.g:hover{color:var(--tx)}.btn.wh{background:var(--tx);color:#080808;min-height:40px;padding:0 20px}
+/* header */
+header{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:0;right:0;z-index:20;display:flex;justify-content:center;padding:0 16px}
+nav{width:100%;max-width:1000px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 8px 8px 22px;border:1px solid var(--bd);border-radius:999px;background:rgba(8,8,8,.88)}
+@supports(backdrop-filter:blur(1px)){nav{background:rgba(8,8,8,.6);backdrop-filter:blur(14px)}}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;letter-spacing:-.02em}
+.logo i{width:22px;height:22px;border-radius:7px;background:var(--lime);display:grid;place-items:center}
+.logo i::after{content:"";width:10px;height:10px;border-left:3px solid #080808;border-bottom:3px solid #080808;transform:translateY(-1px) rotate(-45deg) scale(.7)}
+.links{display:flex;gap:28px;color:var(--mu);font-size:15px}.links a:hover{color:var(--tx)}
+.mb{display:none;background:none;border:1px solid var(--bd);color:var(--tx);width:40px;height:40px;border-radius:50%;cursor:pointer}
+@media(max-width:760px){.links{display:none;position:absolute;top:64px;left:16px;right:16px;flex-direction:column;gap:0;background:var(--sf);border:1px solid var(--bd);border-radius:24px;padding:8px}.links.o{display:flex}.links a{padding:14px 16px}.mb{display:block;margin-left:auto}nav .wh{display:none}}
+/* hero */
+.hero{padding:calc(env(safe-area-inset-top,0px) + 150px) 0 60px;text-align:center;overflow:hidden}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.stage{position:relative;width:min(340px,86vw);margin:64px auto 0}
+.phone{border:1px solid #333;border-radius:44px;background:#000;padding:10px;box-shadow:0 40px 100px rgba(29,185,84,.07)}
+.scr{background:var(--sf);border-radius:34px;padding:22px 18px;text-align:left;aspect-ratio:9/17}
+.scr small{color:var(--mu);font-size:12px}.bal{font-size:30px;font-weight:700;letter-spacing:-.03em;margin:2px 0 14px}
+.row{display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-top:1px solid var(--bd)}.row b{font-weight:600}
+.bar{height:8px;border-radius:99px;background:#262626;overflow:hidden}.bar span{display:block;height:100%;width:var(--w);background:var(--lime);border-radius:99px;transform:scaleX(0);transform-origin:left;transition:transform 1.2s var(--e)}
+.in .bar span,.bar.in span{transform:scaleX(1)}
+.fc{position:absolute;background:var(--el);border:1px solid var(--bd);border-radius:18px;padding:12px 14px;font-size:13px;text-align:left;width:190px;box-shadow:0 12px 40px rgba(0,0,0,.5);animation:fl var(--d,6s) ease-in-out infinite alternate}
+.fc b{display:block;font-size:14px}.fc small{color:var(--mu)}
+@keyframes fl{to{transform:translateY(-7px)}}
+.paused .fc{animation-play-state:paused}
+.f1{left:-150px;top:60px;--d:5.5s}.f2{right:-150px;top:30px;--d:6.5s}.f3{left:-170px;top:250px;--d:6s}.f4{right:-170px;top:190px;--d:5s}.f5{left:-120px;bottom:70px;--d:7s}.f6{right:-140px;bottom:40px;--d:6.2s}
+@media(max-width:1000px){.f1,.f2{display:none}.f3{left:-30px}.f4{right:-30px}.f5,.f6{display:none}.f3,.f4{width:150px}}
+@media(max-width:560px){.f4{display:none}.f3{left:-14px;top:auto;bottom:-24px}}
+.demo{color:var(--mu);font-size:13px;margin-top:20px}
+.pz{background:none;border:1px solid var(--bd);color:var(--mu);border-radius:99px;padding:6px 14px;cursor:pointer;font:inherit;font-size:13px;margin-top:10px}
+/* entry */
+.r{opacity:0;transform:translateY(22px);transition:opacity .7s var(--e),transform .7s var(--e);transition-delay:var(--t,0s)}
+.r.in{opacity:1;transform:none}
+.hero .stage.r{transform:translateY(24px) scale(.96)}.hero .stage.r.in{transform:none}
+/* sections */
+section{padding:clamp(72px,11vw,150px) 0}
+.pil{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid var(--bd)}
+.pil div{padding:40px 28px;border-right:1px solid var(--bd)}.pil div:last-child{border:0}.pil h3{font-size:28px;margin-bottom:8px}
+@media(max-width:760px){.pil{grid-template-columns:1fr}.pil div{border-right:0;border-bottom:1px solid var(--bd)}}
+.ct{text-align:center}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:56px 0 40px;text-align:left}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:24px;padding:28px}.card h3{font-size:20px;margin:18px 0 8px;letter-spacing:-.01em}.card p{font-size:15px}
+.ic{width:44px;height:44px;border-radius:14px;background:var(--el);border:1px solid var(--bd);display:grid;place-items:center;color:var(--lime)}
+@media(max-width:980px){.grid{grid-template-columns:1fr 1fr}}@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.alt{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,90px);align-items:center}
+.alt.rv .tx{order:2}.tx p{margin:20px 0 32px;max-width:460px}
+.art{position:relative;background:var(--sf);border:1px solid var(--bd);border-radius:32px;min-height:380px;overflow:hidden;display:grid;place-items:center;padding:24px}
+.art>svg{position:absolute;inset:0;width:100%;height:100%;opacity:.9}
+.art .fc{position:relative;animation:none;width:min(260px,100%);z-index:1;margin:6px 0}
+.stack{display:grid;gap:12px;z-index:1;justify-items:center}
+@media(max-width:860px){.alt{grid-template-columns:1fr}.alt.rv .tx{order:0}}
+.msg{padding:10px 14px;border-radius:16px;font-size:14px;max-width:88%}.me{background:var(--lime);color:#080808;justify-self:end}.bot{background:var(--el);border:1px solid var(--bd)}
+.pr{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px;text-align:left}
+.pr .card{padding:36px}.pr h3{font-size:26px}.pr p{margin:10px 0 24px}
+@media(max-width:700px){.pr{grid-template-columns:1fr}}
+details{border-bottom:1px solid var(--bd)}summary{cursor:pointer;padding:22px 0;font-weight:600;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}summary::after{content:"+";color:var(--lime);font-size:24px;transition:transform .3s}
+details[open] summary::after{transform:rotate(45deg)}
+.ans{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--e)}details[open] .ans{grid-template-rows:1fr}.ans>div{overflow:hidden}.ans p{padding-bottom:22px;max-width:680px}
+.faq{max-width:820px;margin:48px auto 0;border-top:1px solid var(--bd)}
+.fin{border:1px solid var(--bd);border-radius:40px;background:var(--sf);padding:clamp(48px,8vw,100px) 24px;text-align:center}.fin p{margin:20px 0 32px}
+footer{border-top:1px solid var(--bd);padding:40px 0;color:var(--mu);font-size:14px}
+footer .w{display:flex;flex-wrap:wrap;justify-content:space-between;gap:20px}footer nav{all:unset;display:flex;gap:22px;flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.r{opacity:1;transform:none}.bar span{transform:none}}
+
+.finbot-float{position:fixed;right:22px;bottom:22px;z-index:40;display:flex;align-items:flex-end;gap:10px}
+.finbot-float .msg{max-width:240px;padding:12px 14px;border:1px solid rgba(29,185,84,.5);border-radius:18px 18px 5px 18px;background:rgba(12,12,12,.94);font-size:13px;color:#f7f7f7;opacity:0;transform:translateY(8px);transition:.25s var(--e);box-shadow:0 16px 45px rgba(0,0,0,.45)}
+.finbot-float.show .msg{opacity:1;transform:none}
+.finbot-float button{width:74px;height:74px;border-radius:50%;border:1px solid rgba(29,185,84,.5);padding:0;background:#090909;overflow:hidden;cursor:pointer;box-shadow:0 0 35px rgba(29,185,84,.12)}
+.finbot-float img{width:100%;height:100%;object-fit:cover}
+@media(max-width:560px){.finbot-float{right:12px;bottom:12px}.finbot-float button{width:62px;height:62px}.finbot-float .msg{max-width:190px;font-size:12px}}
+
+
+/* React Bits Grainient visual on the initial hero */
+.hero{position:relative;isolation:isolate}
+.hero>.grainient-landing-bg{
+  position:absolute;inset:0;width:100%;height:100%;z-index:-3;display:block;
+  background:#000;pointer-events:none
+}
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 22%,rgba(3,84,57,.08),transparent 44%),
+    linear-gradient(180deg,rgba(0,0,0,.10),rgba(8,8,8,.18) 66%,var(--bg) 100%);
+}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.14;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,black,transparent 88%);
+}
+.hero>.w{position:relative;z-index:1}
+.hero h1{text-shadow:0 10px 44px rgba(0,0,0,.28)}
+.hero .phone{box-shadow:0 42px 120px rgba(0,0,0,.56),0 0 80px rgba(3,84,57,.12)}
+@media(prefers-reduced-motion:reduce){.hero>.grainient-landing-bg{filter:none}}
+
+
+/* ===== Carrossel notebook/celular + tipografia ===== */
+body{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-variant-numeric:tabular-nums}
+h1,h2,h3{text-wrap:balance}p,.lead{text-wrap:pretty}h1{font-weight:700;letter-spacing:-.04em;line-height:1.04}h2{font-weight:700}
+@media(max-width:640px){h1 br,h2 br{display:none}}
+.ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.show{margin:56px auto 0}.slides{display:grid;justify-items:center}
+.slide{grid-area:1/1;position:relative;margin:0;width:100%;display:grid;justify-items:center;opacity:0;visibility:hidden;transform:translateX(56px) scale(.96);transition:opacity .7s var(--e),transform .9s var(--e),visibility .7s;pointer-events:none}
+.slide.on{opacity:1;visibility:visible;transform:none;pointer-events:auto}.slide.out{transform:translateX(-56px) scale(.96)}
+.show .stage{margin:0 auto;width:min(310px,80vw)}.stage .scr{position:relative;overflow:hidden}
+.lap{width:min(820px,90vw);position:relative;filter:drop-shadow(0 40px 70px rgba(0,0,0,.55))}
+.lid{background:#050505;border:1px solid #333;border-radius:18px 18px 4px 4px;padding:10px 10px 12px}
+.lscr{container-type:inline-size;display:grid;grid-template-columns:15% 1fr;aspect-ratio:16/10;background:var(--sf);border-radius:8px;overflow:hidden;text-align:left}
+.lscr aside{background:#0b0b0b;border-right:1px solid var(--bd);padding:2cqw 1.6cqw;display:grid;align-content:start;gap:1.4cqw}
+.lscr aside i{width:3cqw;height:3cqw;border-radius:.9cqw;background:var(--lime);margin-bottom:1cqw}
+.lscr aside u{height:2.6cqw;border-radius:.8cqw;background:#1a1a1a}.lscr aside u.a{background:#262626;box-shadow:inset .5cqw 0 var(--lime)}
+.lm{padding:2.2cqw;display:grid;gap:1.6cqw;align-content:start}.lt{font-size:2.6cqw;letter-spacing:-.02em}
+.kp{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4cqw}.cr{display:grid;grid-template-columns:1.6fr 1fr;gap:1.4cqw}
+.kp>div,.cc{background:var(--el);border:1px solid var(--bd);border-radius:1.4cqw;padding:1.5cqw 1.8cqw}
+.kp small,.cc small{display:block;color:var(--mu);font-size:1.5cqw}.kp b{font-size:2.8cqw;letter-spacing:-.03em}.kp b.g{color:var(--lime)}
+.lc{width:100%;height:auto;margin-top:.8cqw;overflow:visible}.lc path{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.lc .l1{stroke:var(--lime)}.lc .l2{stroke:var(--ros)}.lc .ar{fill:url(#ga);stroke:none;opacity:0}.lc .l1,.lc .l2,.spk{stroke-dasharray:1;stroke-dashoffset:1}
+.hb{display:grid;gap:1.4cqw;margin-top:1.4cqw}.lscr .bar{height:1.2cqw}
+.lb{height:12px;margin:0 -3%;background:linear-gradient(#2c2c2c,#151515);border-radius:0 0 22px 22px}
+.show .bar span{transition:width 1.4s var(--e),transform 1.2s var(--e)}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes fin{to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.9)}}
+.slide.on .l1{animation:draw 1.8s var(--e) .3s forwards}.slide.on .l2{animation:draw 1.8s var(--e) .6s forwards}.slide.on .ar{animation:fin 1s ease 1.4s forwards}
+.slide.on .spk{animation:draw 1.6s var(--e) 1s forwards}
+.slide:not(.on) .fc{animation:none;opacity:0}
+.slide.on .fc{animation:pop .7s var(--e) var(--dl,0s) both,fl var(--d,6s) ease-in-out calc(var(--dl,0s) + .7s) infinite alternate}
+.nb .c1{left:1%;top:10%}.nb .c2{right:1%;top:3%}.nb .c3{right:3%;bottom:12%}.nb .c4{left:3%;bottom:4%}
+@media(max-width:900px){.nb .c1,.nb .c2{display:none}.nb .c3{right:0;bottom:-6%;width:160px}.nb .c4{left:0;bottom:-6%;width:160px}}
+.pt{position:absolute;left:10px;right:10px;top:12px;z-index:2;background:rgba(23,23,23,.97);border:1px solid rgba(29,185,84,.5);border-radius:16px;padding:9px 12px;font-size:12px;opacity:0;transform:translateY(-14px);box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.slide.on .pt{animation:toast 6s var(--e) 1.2s infinite}
+@keyframes toast{0%{opacity:0;transform:translateY(-14px)}8%,70%{opacity:1;transform:none}80%,100%{opacity:0;transform:translateY(-14px)}}
+.ctl{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:32px}
+.cb{width:44px;height:44px;border-radius:50%;border:1px solid var(--bd);background:rgba(17,17,17,.75);color:var(--tx);display:grid;place-items:center;cursor:pointer;transition:border-color .2s}.cb:hover{border-color:var(--lime)}
+.cb svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dts{display:flex;gap:6px;padding:5px;border:1px solid var(--bd);border-radius:999px;background:rgba(17,17,17,.75)}
+.dt{position:relative;overflow:hidden;border:0;background:none;color:var(--mu);font:inherit;font-size:14px;font-weight:600;padding:10px 20px;border-radius:999px;cursor:pointer;transition:color .2s,background .2s}.dt.on{color:var(--tx);background:#1f1f1f}
+.dt i{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--lime);transform:scaleX(0);transform-origin:left}
+.dt.on i{animation:prog var(--dur,7.5s) linear forwards}.show.paused .dt.on i,.show.hold .dt.on i{animation-play-state:paused}
+@keyframes prog{to{transform:scaleX(1)}}.show.paused .fc,.show.paused .pt{animation-play-state:paused}
+.art>svg.dn{position:absolute;inset:auto;right:7%;top:8%;width:120px;height:120px;z-index:1}
+.d1,.d2,.d3{transition:stroke-dasharray 1.6s var(--e)}.in .d1{stroke-dasharray:46 54}.in .d2{stroke-dasharray:30 70}.in .d3{stroke-dasharray:16 84}
+@media(max-width:560px){.art>svg.dn{width:84px;height:84px}}
+</style>
+<link rel="stylesheet" href="mobile-services.css?v=6"></head>
+<body><div class="ambient-grid" aria-hidden="true"></div>
+<header><nav aria-label="Principal">
+<a class="logo" href="#top"><i aria-hidden="true"></i>FinTrack</a>
+<div class="links" id="lk"><a href="#funcoes">Funcionalidades</a><a href="#aprender">Aprendizado</a><a href="#professores">Para professores</a></div>
+<a class="btn wh" href="login.html">Entrar</a>
+<button class="mb" id="mb" aria-label="Abrir menu" aria-expanded="false" aria-controls="lk">☰</button>
+</nav></header>
+
+<main id="top">
+<div class="hero"><canvas id="grainientLanding" class="grainient-landing-bg" aria-hidden="true"></canvas><div class="w">
+<h1 class="r">Aprenda a cuidar da sua grana.<br>Construa o seu futuro.</h1>
+<p class="lead r" style="--t:.1s">Organize seus gastos, alcance suas metas e aprenda educação financeira na prática, com atividades e uma IA que explica tudo de um jeito simples.</p>
+<div class="cta r" style="--t:.2s"><a class="btn p" href="login.html?mode=signup">Começar agora</a><a class="btn g" href="#funcoes">Explorar a plataforma</a></div>
+<div class="show r" style="--t:.3s" id="show" role="group" aria-roledescription="carrossel" aria-label="O FinTrack no notebook e no celular">
+<div class="slides">
+<figure class="slide nb on" aria-label="FinTrack no notebook">
+<div class="lap" aria-hidden="true"><div class="lid"><div class="lscr"><aside><i></i><u class="a"></u><u></u><u></u><u></u></aside>
+<div class="lm"><b class="lt">Visão financeira</b>
+<div class="kp"><div><small>Saldo disponível</small><b data-n="1284.5">R$ 1.284,50</b></div><div><small>Receitas</small><b class="g" data-n="1800">R$ 1.800,00</b></div><div><small>Despesas</small><b data-n="615.5">R$ 615,50</b></div></div>
+<div class="cr"><div class="cc"><small>Receitas e despesas</small><svg class="lc" viewBox="0 0 300 110"><defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1DB954" stop-opacity=".35"/><stop offset="1" stop-color="#1DB954" stop-opacity="0"/></linearGradient></defs><line x1="0" x2="300" y1="30" y2="30" stroke="#262626"/><line x1="0" x2="300" y1="70" y2="70" stroke="#262626"/><path class="ar"/><path class="l1" pathLength="1"/><path class="l2" pathLength="1"/></svg></div>
+<div class="cc"><small>Gastos por categoria</small><div class="hb"><div class="bar"><span data-live style="--w:55%"></span></div><div class="bar"><span data-live style="--w:32%;background:var(--lil)"></span></div><div class="bar"><span data-live style="--w:18%;background:var(--ros)"></span></div></div></div></div>
+</div></div></div><div class="lb"></div></div>
+<div class="fc c1" style="--dl:.6s"><small>Receita</small><b>Mesada +R$ 300,00</b></div>
+<div class="fc c2" style="--dl:1.3s"><small>Despesa · Transporte</small><b>Ônibus −R$ 24,50</b></div>
+<div class="fc c3" style="--dl:2s"><small>Atividade concluída</small><b>Controle de gastos ✓</b></div>
+<div class="fc c4" style="--dl:2.7s"><small>FinBot</small><b>Que tal guardar R$ 100 por mês?</b></div>
+</figure>
+<figure class="slide ph" aria-label="FinTrack no celular" aria-hidden="true"><div class="stage">
+<div class="phone"><div class="scr"><div class="pt"><small>FinBot</small><br><b>Você guardou 30% da meta do notebook!</b></div>
+<small>Saldo disponível</small><div class="bal" data-n="1284.5">R$ 1.284,50</div>
+<div class="row"><span>Receitas</span><b style="color:var(--lime)">R$ 1.800,00</b></div><div class="row"><span>Despesas</span><b>R$ 615,50</b></div><div class="row"><span>Reservado em metas</span><b>R$ 900,00</b></div>
+<div style="margin-top:18px"><small>Meta: notebook · 30%</small><div class="bar" style="margin-top:8px"><span style="--w:30%"></span></div></div>
+<div style="margin-top:18px"><small>Gastos por categoria</small><div class="bar" style="margin:8px 0"><span data-live style="--w:55%"></span></div><div class="bar" style="margin:8px 0"><span data-live style="--w:32%;background:var(--lil)"></span></div><div class="bar"><span data-live style="--w:18%;background:var(--ros)"></span></div></div></div></div>
+<div class="fc f1" style="--dl:.6s"><small>Receita</small><b>Mesada +R$ 300,00</b></div>
+<div class="fc f2" style="--dl:1.2s"><small>Despesa · Transporte</small><b>Ônibus −R$ 24,50</b></div>
+<div class="fc f3" style="--dl:1.8s"><small>Meta</small><b>Notebook · 30%</b><div class="bar" style="margin-top:6px"><span style="--w:30%"></span></div></div>
+<div class="fc f4" style="--dl:2.4s"><small>Atividade concluída</small><b>Controle de gastos ✓</b></div>
+<div class="fc f5" style="--dl:3s"><small>Gastos do mês</small><svg viewBox="0 0 120 40" width="100%" height="36" role="img" aria-label="Gráfico demonstrativo de gastos"><path class="spk" pathLength="1" d="M2 32 L30 20 L58 26 L88 10 L118 16" fill="none" stroke="#1DB954" stroke-width="3" stroke-linecap="round"/></svg></div>
+<div class="fc f6" style="--dl:3.6s"><small>FinBot</small><b>Que tal guardar R$ 100 por mês?</b></div>
+</div></figure></div>
+<div class="ctl"><button class="cb" id="pv" aria-label="Slide anterior"><svg viewBox="0 0 24 24" width="18" height="18"><path d="m15 6-6 6 6 6"/></svg></button><div class="dts"><button class="dt on" aria-label="Ver no notebook">No notebook<i></i></button><button class="dt" aria-label="Ver no celular">No celular<i></i></button></div><button class="cb" id="nx" aria-label="Próximo slide"><svg viewBox="0 0 24 24" width="18" height="18"><path d="m9 6 6 6-6 6"/></svg></button></div>
+<p class="demo">Demonstração · valores fictícios</p>
+<button class="pz" id="pz" aria-pressed="false">Pausar animações</button></div>
+</div></div>
+
+<div class="w"><div class="pil r">
+<div><h3>Controle</h3><p>Receitas e despesas organizadas.</p></div>
+<div><h3>Aprendizado</h3><p>Conteúdos e atividades práticas.</p></div>
+<div><h3>Evolução</h3><p>Metas e progresso acompanhados.</p></div>
+</div></div>
+
+<section id="funcoes"><div class="w ct">
+<h2 class="r">Tudo para entender melhor<br>o seu dinheiro.</h2>
+<div class="grid">
+<div class="card r"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 10h18M9 10v10"/></svg></div><h3>Controle financeiro</h3><p>Registre receitas e despesas e veja o mês inteiro em um painel.</p></div>
+<div class="card r" style="--t:.08s"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/></svg></div><h3>Metas pessoais</h3><p>Defina um valor, um prazo e acompanhe quanto já reservou.</p></div>
+<div class="card r" style="--t:.16s"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div><h3>Atividades educativas</h3><p>Aulas curtas, quizzes e exercícios práticos com correção comentada.</p></div>
+<div class="card r" style="--t:.24s"><div class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9Z"/><path d="M19 17v4M17 19h4"/></svg></div><h3>Assistente FinBot</h3><p>Tire dúvidas e entenda seus números com explicações simples.</p></div>
+</div>
+<a class="btn p r" href="login.html?mode=signup">Conhecer o FinTrack</a>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+<div class="alt r"><div class="tx"><h2>Entenda cada gasto.<br>Faça escolhas melhores.</h2><p>Registre suas receitas e despesas e descubra como seus hábitos aparecem no orçamento.</p><a class="btn p" href="login.html?mode=signup">Organizar meus gastos</a></div>
+<div class="art"><svg class="dn" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="44" fill="none" stroke="#262626" stroke-width="14"/><circle class="d1" cx="60" cy="60" r="44" pathLength="100" fill="none" stroke="#1DB954" stroke-width="14" stroke-dasharray="0 100" transform="rotate(-90 60 60)"/><circle class="d2" cx="60" cy="60" r="44" pathLength="100" fill="none" stroke="#B9A5FF" stroke-width="14" stroke-dasharray="0 100" transform="rotate(25 60 60)"/><circle class="d3" cx="60" cy="60" r="44" pathLength="100" fill="none" stroke="#FF9EC4" stroke-width="14" stroke-dasharray="0 100" transform="rotate(140 60 60)"/></svg><svg viewBox="0 0 400 380" aria-hidden="true"><circle cx="300" cy="90" r="80" fill="#B9A5FF" opacity=".16"/><circle cx="90" cy="300" r="70" fill="#FF9EC4" opacity=".14"/></svg>
+<div class="stack"><div class="fc"><small>Alimentação</small><b>R$ 210,00</b></div><div class="fc"><small>Transporte</small><b>R$ 98,50</b></div><div class="fc"><small>Lazer</small><b>R$ 120,00</b></div></div></div></div>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+<div class="alt rv r"><div class="tx"><h2>Seus objetivos ganham um plano.</h2><p>Defina o que você quer conquistar, acompanhe quanto já reservou e veja o que falta para chegar lá.</p><a class="btn p" href="login.html?mode=signup">Criar minha primeira meta</a></div>
+<div class="art"><div class="fc" style="width:min(300px,100%);padding:22px"><small>Meta · Demonstração</small><b style="font-size:20px;margin:4px 0 12px">Notebook</b><div class="bar"><span style="--w:30%"></span></div><div class="row" style="border:0;padding-bottom:0"><span>R$ 900 de R$ 3.000</span><b style="color:var(--lime)">30%</b></div></div></div></div>
+</div></section>
+
+<section id="aprender" style="padding-top:0"><div class="w">
+<div class="alt r"><div class="tx"><h2>Aprenda hoje.<br>Use no seu dia a dia.</h2><p>Aulas curtas, exemplos simples e atividades que ajudam você a entender o dinheiro na prática.</p><a class="btn p" href="login.html?mode=signup">Explorar atividades</a></div>
+<div class="art"><svg viewBox="0 0 400 380" aria-hidden="true"><circle cx="90" cy="90" r="70" fill="#8FC4FF" opacity=".22"/><circle cx="330" cy="310" r="80" fill="#1DB954" opacity=".1"/></svg>
+<div class="stack"><div class="fc"><small>Módulo</small><b>Poupança e hábito de guardar</b><div class="bar" style="margin-top:6px"><span style="--w:60%"></span></div></div><div class="fc"><small>Quiz · Necessidade ou desejo?</small><b>Pergunta 3 de 5</b></div><div class="fc"><small>Progresso</small><b>2 módulos em andamento</b></div></div></div></div>
+</div></section>
+
+<section style="padding-top:0"><div class="w">
+<div class="alt rv r"><div class="tx"><h2>Uma conversa pode esclarecer muita coisa.</h2><p>Tire dúvidas sobre orçamento, metas e conceitos financeiros com explicações acessíveis.</p><a class="btn p" href="login.html?mode=signup">Conhecer o FinBot</a></div>
+<div class="art"><div class="stack" style="width:100%;max-width:340px;justify-items:stretch"><div class="msg me">O que é reserva de emergência?</div><div class="msg bot">É um valor guardado para imprevistos, como um conserto ou uma despesa inesperada. Uma boa meta inicial é começar com pouco e crescer aos poucos.</div><div class="msg me">Como começo com R$ 50?</div><small style="color:var(--mu)">Conversa demonstrativa</small></div></div></div>
+</div></section>
+
+<section id="professores" style="padding-top:0"><div class="w ct">
+<h2 class="r">Educação financeira também<br>acontece em conjunto.</h2>
+<p class="lead r">Professores organizam turmas, atribuem atividades e acompanham o aprendizado dos alunos. Dados financeiros individuais só são compartilhados se você permitir.</p>
+<div class="pr">
+<div class="card r"><h3>Sou aluno</h3><p>Organize suas finanças e aprenda no seu ritmo.</p><a class="btn p" href="login.html?mode=signup">Criar conta de aluno</a></div>
+<div class="card r" style="--t:.1s"><h3>Sou professor</h3><p>Crie turmas e acompanhe atividades.</p><a class="btn wh" href="login.html?mode=signup">Criar conta de professor</a></div>
+</div></div></section>
+
+<section style="padding-top:0"><div class="w"><h2 class="ct r">Perguntas frequentes</h2>
+<div class="faq">
+<details><summary>O que é o FinTrack?</summary><div class="ans"><div><p>Uma plataforma para organizar receitas, despesas e metas e aprender educação financeira com atividades e um assistente de IA.</p></div></div></details>
+<details><summary>Preciso entender de finanças para começar?</summary><div class="ans"><div><p>Não. As aulas partem do básico, com exemplos do dia a dia.</p></div></div></details>
+<details><summary>Como funcionam as atividades?</summary><div class="ans"><div><p>Cada aula tem explicação curta, exemplo, atividade, correção comentada e resumo.</p></div></div></details>
+<details><summary>Como entro em uma turma?</summary><div class="ans"><div><p>Com o código informado pelo professor. Você confere a turma antes de confirmar e pode sair quando quiser.</p></div></div></details>
+<details><summary>O professor pode ver meus dados financeiros?</summary><div class="ans"><div><p>Por padrão, não. O compartilhamento é controlado por turma e o professor nunca acessa suas conversas com o FinBot.</p></div></div></details>
+<details><summary>O FinBot pode movimentar meu dinheiro?</summary><div class="ans"><div><p>Não. O FinTrack não movimenta dinheiro, e o FinBot só altera dados com a sua confirmação.</p></div></div></details>
+<details><summary>Meus dados ficam salvos?</summary><div class="ans"><div><p>Sim, em banco de dados, e você acessa de qualquer dispositivo com a sua conta.</p></div></div></details>
+</div></div></section>
+
+<section id="entrar" style="padding-top:0"><div class="w"><div class="fin r">
+<h2>Seu próximo passo começa<br>com uma escolha.</h2><p>Comece a organizar seu dinheiro e aprender no seu ritmo.</p><a class="btn p" href="login.html?mode=signup">Criar minha conta</a></div></div></section>
+</main>
+
+<footer><div class="w"><div class="logo"><i aria-hidden="true"></i>FinTrack</div>
+<nav aria-label="Rodapé"><a href="#funcoes">Funcionalidades</a><a href="#aprender">Aprendizado</a><a href="#professores">Professores</a><a href="#">Termos</a><a href="#">Privacidade</a><a href="mailto:contato@exemplo.com">Contato</a></nav></div></footer>
+
+<script>
+const rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const mb=document.getElementById('mb'),lk=document.getElementById('lk');
+mb.onclick=()=>{const o=lk.classList.toggle('o');mb.setAttribute('aria-expanded',o)};
+lk.querySelectorAll('a').forEach(a=>a.onclick=()=>{lk.classList.remove('o');mb.setAttribute('aria-expanded',false)});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');e.target.querySelectorAll('.bar').forEach(b=>b.classList.add('in'));io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('.r').forEach(el=>io.observe(el));
+
+const show=document.getElementById('show'),sl=[...show.querySelectorAll('.slide')],dt=[...show.querySelectorAll('.dt')],pz=document.getElementById('pz'),DUR=7500,BRL=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+let cur=0,tm=0,man=false,vis=true,hov=false,live=false,T0=0;
+function countUp(root){root.querySelectorAll('[data-n]').forEach(el=>{const to=+el.dataset.n;if(rm){el.textContent=BRL.format(to);return}const t0=performance.now();(function s(t){const k=Math.min(1,(t-t0)/1500);el.textContent=BRL.format(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(s)})(t0)})}
+const lc=show.querySelector('.lc'),ar=lc.querySelector('.ar'),l1=lc.querySelector('.l1'),l2=lc.querySelector('.l2'),P=a=>a.map((v,i)=>(i?'L':'M')+i*50+' '+(104-v)).join(''),jit=a=>a.map(v=>Math.max(18,Math.min(88,v+(Math.random()-.5)*28)));
+let FA=[38,46,42,58,55,70,78],FB=[28,33,37,31,40,35,41],TA=FA,TB=FB;
+function draw(a,b){l1.setAttribute('d',P(a));l2.setAttribute('d',P(b));ar.setAttribute('d',P(a)+'L300 110L0 110Z')}draw(FA,FB);
+function tick(t){if(!live)return;if(!T0)T0=t;const k=Math.min(1,(t-T0)/2600),e=k*k*(3-2*k);draw(FA.map((v,i)=>v+(TA[i]-v)*e),FB.map((v,i)=>v+(TB[i]-v)*e));if(k>=1){FA=TA;FB=TB;TA=jit(FA);TB=jit(FB);T0=t;bars()}requestAnimationFrame(tick)}
+function bars(){sl[cur].querySelectorAll('[data-live]').forEach(s=>s.style.setProperty('--w',Math.round(14+Math.random()*58)+'%'))}
+function sync(){const stop=rm||man||!vis;show.classList.toggle('paused',stop&&!rm);show.classList.toggle('hold',hov);clearTimeout(tm);live=cur===0&&!stop;if(live){T0=0;requestAnimationFrame(tick)}if(!stop&&!hov)tm=setTimeout(()=>go(cur+1),DUR)}
+function go(i){cur=(i+sl.length)%sl.length;sl.forEach((s,j)=>{s.classList.toggle('on',j===cur);s.classList.toggle('out',j<cur);s.setAttribute('aria-hidden',j!==cur)});dt.forEach((d,j)=>{d.classList.remove('on');void d.offsetWidth;d.classList.toggle('on',j===cur);d.setAttribute('aria-current',j===cur)});countUp(sl[cur]);bars();sync()}
+dt.forEach((d,j)=>d.onclick=()=>go(j));document.getElementById('pv').onclick=()=>go(cur-1);document.getElementById('nx').onclick=()=>go(cur+1);
+show.addEventListener('mouseenter',()=>{hov=true;sync()});show.addEventListener('mouseleave',()=>{hov=false;sync()});
+show.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(cur+1);if(e.key==='ArrowLeft')go(cur-1)});
+pz.onclick=()=>{man=!man;pz.setAttribute('aria-pressed',man);pz.textContent=man?'Retomar animações':'Pausar animações';sync()};
+new IntersectionObserver(es=>{vis=es[0].isIntersecting;sync()}).observe(show);go(0);
+
+const ff=document.getElementById('finbotFloat'); if(ff){setTimeout(()=>ff.classList.add('show'),1600);setTimeout(()=>ff.classList.remove('show'),5200);ff.querySelector('button').onclick=()=>ff.classList.toggle('show');}
+</script>
+<div class="finbot-float" id="finbotFloat"><div class="msg">Oi! Sou o FinBot. Depois do login eu posso te acompanhar no dashboard.</div><button type="button" aria-label="Abrir mensagem do FinBot"><img src="coruja.gif" alt="FinBot, coruja do FinTrack"></button></div>
+<script src="grainient-landing.js"></script>
+</body>
+</html>

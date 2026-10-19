@@ -1,0 +1,11 @@
+{
+  "passed": [
+    "New endpoints require authentication",
+    "Reminder deduplication, read persistence and cross-account isolation",
+    "Simultaneous reservations cannot spend the same balance twice",
+    "Spending thresholds, preferences and invalid budget validation",
+    "Lesson reminders respect preferences and remain read",
+    "Migration preserves data, indexes selected, connections closed and backup verified",
+    "Market cache persists and source outages have honest fallback"
+  ]
+}

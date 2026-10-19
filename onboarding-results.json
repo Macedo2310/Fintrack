@@ -1,0 +1,11 @@
+{
+  "signup": true,
+  "avatar": true,
+  "transaction": true,
+  "reloadPersistence": true,
+  "sixMonthChart": true,
+  "localFinancialStorage": false,
+  "invalidPasswordRejected": true,
+  "login": true,
+  "errors": []
+}
