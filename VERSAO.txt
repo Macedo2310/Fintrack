@@ -1,0 +1,13 @@
+FinTrack 0.6 - backend completo (FastAPI + SQLite) com videos introdutorios
+Data: 16/11/2026
+Base: FinTrack 0.5 (backend), com melhorias da edicao GitHub Pages de 29/10/2026
+Videos MP4 identicos aos fornecidos (SHA-256 conferido).
+Hospedagem: Python + HTTPS + disco persistente. Nao e pacote estatico para GitHub Pages.
+
+0.6.1 - correcoes (17/11/2026)
+- Limite de tentativas usa o IP da conexao; X-Forwarded-For so vale vindo de FORWARDED_ALLOW_IPS (uvicorn).
+- Limites de tentativa gravados no SQLite (migracao v4): nao zeram ao reiniciar.
+- app.html e avatar.html exigem sessao tambem por /static/ e com variacoes de caixa/caminho.
+- on_event trocado por lifespan; pytest so silencia o aviso do TestClient.
+- Duracao dos videos lida so do cabecalho (sem carregar 6-16 MB por video na inicializacao).
+- Tipo de atividade de turma validado e gravado (hoje so 'aula').

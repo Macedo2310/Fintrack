@@ -1,0 +1,3 @@
+# Coloque aqui as legendas dos vídeos introdutórios no formato WebVTT:
+# poupanca.vtt, controle.vtt, planejamento.vtt, investimentos.vtt
+# O player carrega automaticamente quando o arquivo existe.

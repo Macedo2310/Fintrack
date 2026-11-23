@@ -1,0 +1,30 @@
+FINTRACK — ATUALIZAÇÃO DO GRÁFICO DE LINHA — V5
+
+BASE
+fintrack-github-pages-release-v4-completo.zip fornecido pelo usuário.
+
+ALTERAÇÕES
+- Traços sólidos de 5 px, extremidades arredondadas e grade horizontal legível.
+- Escala monetária com intervalos arredondados e espaço para os rótulos.
+- Rótulos mensais inclinados; legenda lateral em telas largas e abaixo em telas menores.
+- Identidade escura e cores funcionais verde/vermelho preservadas, com suporte ao tema claro.
+- Animação de entrada, seleção Linha/Barras/Pizza e preferência por conta mantidas.
+- Tooltip permanece visível após toque; fecha ao tocar fora, cancelar o gesto ou sair com o mouse.
+- Corrigida a largura do layout móvel e restaurada a posição fixa da navegação inferior.
+- URLs dos arquivos app.css e app.js atualizadas para evitar o uso da versão anterior em cache.
+
+DADOS
+Os cálculos e as chaves de armazenamento local V4 não foram alterados.
+Meses sem transações continuam com zero; as linhas seguem os valores efetivamente registrados.
+Contas, transações, metas, educação e demais arquivos do site foram preservados.
+Nenhuma conta ou transação de teste foi incluída neste pacote.
+
+VALIDAÇÃO DESTA ATUALIZAÇÃO
+- Sintaxe de todos os arquivos JavaScript e scripts inline: 7 verificações sem erros.
+- Chromium: gráficos Linha, Barras e Pizza, preferência salva e ausência de erros de JavaScript.
+- Desktop de 1440 px e telas de 1024, 390 e 320 px: gráfico dentro da tela, sem rolagem horizontal.
+- Valores dos tooltips conferidos com os registros de teste; toque e fechamento fora do gráfico.
+- Tema claro, meses sem registros, valor de um centavo, mês único e estado sem transações.
+- Transações preservadas após alternar gráfico, tema e tamanho da tela.
+
+As verificações da V4 permanecem registradas em AUDITORIA_V4.txt como histórico.

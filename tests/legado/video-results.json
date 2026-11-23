@@ -1,0 +1,16 @@
+{
+  "realPlaybackBoth": true,
+  "seekBlocked": true,
+  "directApiBlocked": true,
+  "authenticatedMedia": true,
+  "rangeRequests": true,
+  "resume": true,
+  "persistence": true,
+  "viewportWidths": [
+    320,
+    390,
+    768,
+    1366
+  ],
+  "errors": []
+}

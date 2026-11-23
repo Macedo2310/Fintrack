@@ -1,0 +1,26 @@
+[
+  {
+    "width": 320,
+    "pages": 8,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "pages": 8,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 768,
+    "pages": 8,
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "width": 1366,
+    "pages": 8,
+    "overflow": false,
+    "errors": []
+  }
+]

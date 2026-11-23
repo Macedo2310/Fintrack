@@ -1,0 +1,62 @@
+/* Keep controls reachable with touch, keyboard and device safe areas. */
+html{-webkit-text-size-adjust:100%}
+.mobile-nav-toggle,.nav-scrim{display:none}
+.topbar>div:first-child{display:flex;align-items:center;gap:10px}
+.main,.shell{min-width:0}
+@media(max-width:820px){
+ .side{position:fixed;inset:0 auto 0 0;height:100dvh;width:min(280px,85vw);display:block;transform:translateX(-105%);transition:transform .2s ease;z-index:40;border-top:0;border-right:1px solid var(--line);background:var(--bg)}
+ .side.open{transform:none}.side .brand{display:flex}.side .side-bottom{display:block;position:static;margin-top:20px}.side .nav{display:flex;flex-direction:column;gap:6px}.side .nav button{flex-direction:row;justify-content:flex-start;min-height:46px;font-size:13px;padding:10px 14px}.side .nav svg{flex-shrink:0}
+ .mobile-nav-toggle{display:grid;place-items:center;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;font-size:23px}
+ .nav-scrim.open{display:block;position:fixed;inset:0;border:0;background:#0009;z-index:35}
+ .pagehead{flex-wrap:wrap}.toolbar{flex-wrap:wrap}.pagehead h1{overflow-wrap:anywhere}.table td{word-break:break-word}.formgrid{min-width:0}.topbar #scanBtn{display:none}.content{padding:20px 14px 90px}.three,.two{grid-template-columns:minmax(0,1fr)}
+}
+button,a,[role=button]{touch-action:manipulation}
+button,[role=button]{-webkit-user-select:none;user-select:none}
+.market-panel{margin-top:16px}.market-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:20px 0}
+.market-grid article{display:flex;flex-direction:column;gap:8px;min-width:0}.market-grid strong{font-size:25px;font-variant-numeric:tabular-nums}.market-grid small{color:var(--muted);overflow-wrap:anywhere}.market-grid .market-stale{color:var(--red)}
+.reminder-options{display:flex;flex-wrap:wrap;gap:18px;margin:20px 0}.reminder-options label{display:flex;align-items:center;gap:10px;min-height:44px}.reminder-options input{width:20px;height:20px;accent-color:var(--green)}
+#reminderForm .field{max-width:480px;margin-bottom:18px}#reminderForm small{line-height:1.6}
+.reminder-item{margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-left:3px solid var(--green)}.reminder-item.is-read{border-left-color:var(--line)}.reminder-item p{overflow-wrap:anywhere}.reminder-item small{color:var(--muted)}.reminder-item h2{margin:10px 0}.reminder-pagination{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.dialog,.side,.messages{overscroll-behavior:contain}
+@media(pointer:coarse){input:not([type=checkbox]):not([type=radio]),textarea,select,.pagehead .field input{font-size:16px!important}.btn,.mobile-nav-toggle,.chart-picker button{min-height:44px;min-width:44px}button:active{filter:brightness(.9)}}
+@media(max-width:820px){.topbar{height:auto;min-height:67px;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px));flex-wrap:wrap;gap:10px}.top-actions{flex-wrap:wrap;gap:7px}.top-actions .btn{min-height:44px;font-size:11px}.mobile-nav-toggle{min-height:44px;min-width:44px}.side{padding-top:calc(20px + env(safe-area-inset-top,0px));padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));overflow-y:auto}.content{padding-bottom:calc(85px + env(safe-area-inset-bottom,0px))}.dialog{max-height:calc(100dvh - 28px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow-y:auto}.market-grid{grid-template-columns:1fr 1fr}.reminder-item{align-items:flex-start;flex-direction:column}.pagehead .field input{font-size:16px}.reminder-options{flex-direction:column}.card,.main,.content,.field{min-width:0}.toast{max-width:calc(100vw - 36px)}.table td{overflow-wrap:anywhere}.table td>*{min-width:0}}
+@media(max-width:380px){.topbar>div:first-child{width:100%}.top-actions{width:100%;justify-content:space-between}.market-grid{gap:12px}.market-grid strong{font-size:22px}}
+
+@media(max-width:820px){input:not([type=checkbox]):not([type=radio]),select,textarea{font-size:16px!important}}
+
+/* Keep the floating assistant clear of the required video controls. */
+body.intro-active #mascot { display: none !important; }
+
+/* FinTrack 0.6 — estados de metas, atividades e saldos */
+.badge.good{border-color:rgba(30,215,96,.6);background:rgba(30,215,96,.12)}
+.badge.bad{border-color:rgba(255,116,116,.55);color:#ff9a9a;background:rgba(255,116,116,.1)}
+[data-theme="light"] .badge.bad{color:#b42318}
+.goal-explain strong{display:block;font-size:20px;margin:4px 0}
+.goal-explain small{display:block;line-height:1.4}
+.goal-explain .grid{gap:14px}
+.market-status{display:inline-block;font-size:11px;font-weight:800;border-radius:99px;padding:2px 8px;margin-top:4px;width:max-content}
+.market-status.ok{color:var(--green);border:1px solid rgba(30,215,96,.45)}
+.market-status.old{color:#ffd166;border:1px solid rgba(255,209,102,.5)}
+.market-status.off{color:#ff9a9a;border:1px solid rgba(255,116,116,.5)}
+.demo-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.02em;padding:3px 9px;border-radius:99px;background:rgba(255,209,102,.14);color:#ffd166;border:1px solid rgba(255,209,102,.4)}
+button:disabled,.btn:disabled,.switch:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--green,#1DB954);outline-offset:2px}
+.chat-main,.chat-head{min-width:0;max-width:100%}.chat-head>div{min-width:0}.ai-status{white-space:normal;max-width:100%}.ai-status span{overflow-wrap:anywhere}
+.chat-main{grid-template-columns:minmax(0,1fr)}.composer{grid-template-columns:minmax(0,1fr) auto}
+@media(max-width:820px){.chat{grid-template-columns:minmax(0,1fr)!important}.chat-side{display:block!important;max-height:220px;overflow-y:auto;border-right:0!important;border-bottom:1px solid var(--line)}}
+/* Login com Google e verificação de e-mail */
+.google-box{margin-bottom:18px}
+.google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#1f1f1f;border:1px solid #dadce0;font-weight:700;min-height:46px;text-decoration:none}
+.google-btn:hover{background:#f6f7f8}
+.google-btn.disabled{background:#2a2a2a;color:#a0a0a0;border-color:#3a3a3a;cursor:not-allowed;filter:grayscale(1)}
+.google-note:empty{display:none}.google-note{font-size:12px;margin:8px 0 0}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:16px 0 4px;color:var(--muted);font-size:12px}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:var(--line)}
+.code-input{font-size:28px!important;letter-spacing:.4em;text-align:center;font-variant-numeric:tabular-nums;font-weight:800}
+.authform{min-width:0}.authform .tabs{max-width:100%}
+@media(max-width:820px){.authbox{grid-template-columns:minmax(0,1fr)!important}}
+.authform input{min-width:0;max-width:100%}.authform .field>div{min-width:0}
+/* O contêiner do FinBot ocupa uma área grande e invisível: só o botão redondo e o painel aberto recebem cliques. */
+.mascot{pointer-events:none}.mascot-toggle,.mascot.open .mascot-panel{pointer-events:auto}.mascot-tip{pointer-events:none}
+/* Espaço no fim da aula para nenhuma atividade ficar sob o botão do FinBot. */
+#lessonView{padding-bottom:96px}

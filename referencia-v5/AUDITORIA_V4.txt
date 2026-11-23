@@ -1,0 +1,75 @@
+FINTRACK — AUDITORIA RELEASE V4
+
+COMPARAÇÃO
+Base revisada: versão inicial do projeto para GitHub Pages + correções anteriores.
+Os arquivos visuais principais foram preservados; a lógica foi corrigida onde ainda dependia das rotas /api do backend original.
+
+CORREÇÕES PRINCIPAIS
+1. Cadastro / Login / Avatar
+- Cadastro novo direciona para a escolha de avatar antes de abrir o app.
+- Login de conta que já possui avatar entra direto no app.
+- Troca de avatar continua disponível em Configurações > Trocar avatar.
+- Avatar pronto e foto personalizada são persistidos no navegador.
+- Recuperação de senha local foi adaptada para GitHub Pages.
+
+2. Receitas e Despesas
+- Criar transação.
+- Editar transação.
+- Excluir transação.
+- Filtrar por tipo, período e pesquisa.
+- Ordenar por data.
+- Lançamentos recorrentes.
+- Categorias personalizadas.
+- Dados separados por conta local.
+
+3. Dashboard
+- Saldo total.
+- Receitas.
+- Despesas.
+- Resultado.
+- Valores reservados em metas.
+- Saldo disponível.
+- Categorias de despesas.
+- Transações recentes.
+- Histórico de seis meses para o gráfico.
+
+4. Gráficos
+- Linha com segmentos contínuos e mais visíveis.
+- Barras.
+- Pizza.
+- Histórico de seis meses evita gráfico de linha reduzido a um único ponto no mês atual.
+
+5. Metas
+- Criar, editar e excluir.
+- Reservar e retirar valor.
+- Concluir meta.
+- Atualização automática do saldo disponível.
+
+6. Educação
+- 4 módulos.
+- 20 aulas.
+- 80 atividades.
+- Correção local das atividades.
+- Progresso salvo por conta no navegador.
+- Migração do progresso local antigo quando disponível.
+
+7. Outros pontos revisados
+- Perfil e preferências.
+- Análise local de gastos.
+- Assistente financeiro em modo local.
+- Turmas e atribuições em modo local no mesmo navegador.
+- Resumo financeiro autorizado de turma no mesmo navegador.
+- Upload de comprovante sem quebrar a interface; no GitHub Pages o preenchimento é manual porque OCR real exige backend.
+
+VALIDAÇÕES EXECUTADAS
+- Sintaxe de todos os JavaScripts e scripts inline: sem erros.
+- 80 respostas esperadas da Educação: todas aceitas pelo corretor.
+- Transações: criação, resumo, recorrência, edição futura e exclusão testadas.
+- Dashboard: saldo, receitas, despesas, reservas e disponível testados.
+- Metas: criação e reserva testadas.
+- Turmas: criação, entrada, consentimento e resumo financeiro testados no modo local.
+- Gráfico de linha: renderização testada com múltiplos pontos e traços verde/vermelho.
+
+LIMITAÇÃO REAL DO GITHUB PAGES
+GitHub Pages não executa backend nem banco de dados. Nesta versão, os dados ficam no localStorage.
+Portanto, dados não sincronizam entre dispositivos/navegadores, e recursos realmente multiusuário entre pessoas em dispositivos diferentes exigem backend.

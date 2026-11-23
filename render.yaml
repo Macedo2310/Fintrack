@@ -1,0 +1,35 @@
+# FinTrack no Render (Blueprint). Banco, login e arquivos ficam no Supabase; aqui só roda o site.
+# Chaves secretas NÃO ficam neste arquivo: preencha-as no painel do Render (Environment).
+services:
+  - type: web
+    name: fintrack
+    runtime: python
+    plan: free            # grátis: "dorme" após 15 min sem acesso. Para ficar sempre rápido, troque por "starter".
+    region: oregon        # perto do Supabase (us-west-2)
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run.py
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: FINTRACK_BACKEND
+        value: supabase
+      - key: HOST
+        value: 0.0.0.0
+      - key: COOKIE_SECURE
+        value: "1"
+      - key: FORWARDED_ALLOW_IPS   # o Render fica na frente do app como proxy com HTTPS
+        value: "*"
+      - key: SUPABASE_URL
+        value: https://chzaruypbunxuhftpymj.supabase.co
+      - key: SUPABASE_PUBLISHABLE_KEY   # chave pública (pode aparecer no código)
+        value: sb_publishable_JLk623l5Y9qYN8N10Ku-rw_UolwJ4XZ
+      - key: SUPABASE_SECRET_KEY        # secreta: preencher no painel
+        sync: false
+      - key: APP_BASE_URL               # ex.: https://fintrack.onrender.com (ou o seu domínio)
+        sync: false
+      - key: FINTRACK_GOOGLE_ENABLED
+        value: "0"
+      - key: LOG_LEVEL
+        value: INFO

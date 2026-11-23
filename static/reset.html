@@ -1,0 +1,18 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nova senha — FinTrack</title><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css"><link rel="stylesheet" href="mobile-services.css?v=14"><link rel="stylesheet" href="a11y.css?v=3"><script src="a11y.js?v=2"></script></head><body><div class="ambient-grid" aria-hidden="true"></div><main class="authpage"><section class="card" style="width:min(480px,100%);padding:28px"><div class="brand"><span class="brandmark">✓</span>FinTrack</div><h1 style="font-size:34px;margin:8px 0">Defina uma nova senha.</h1><p class="muted">O link é temporário e só pode ser usado uma vez.</p><form id="f" style="margin-top:22px"><div class="field"><label for="p1">Nova senha</label><input id="p1" type="password" minlength="8" required></div><div class="field" style="margin-top:12px"><label for="p2">Confirmar senha</label><input id="p2" type="password" required></div><button class="btn primary" style="width:100%;margin-top:16px">Salvar nova senha</button><div id="s" class="status"></div></form><a class="btn ghost" href="login.html" style="width:100%;display:flex;align-items:center;justify-content:center">Voltar ao login</a></section></main><script>
+const qs=new URLSearchParams(location.search),hs=new URLSearchParams(location.hash.slice(1)),token=qs.get('token'),accessToken=hs.get('type')==='recovery'?hs.get('access_token'):null,s=document.getElementById('s'),p1=document.getElementById('p1'),p2=document.getElementById('p2');
+document.getElementById('f').onsubmit=async e=>{
+  e.preventDefault();
+  if(p1.value!==p2.value){s.textContent='As senhas não coincidem.';return}
+  if(p1.value.length<8||!/[A-Za-zÀ-ÿ]/.test(p1.value)||!/\d/.test(p1.value)){s.textContent='Use pelo menos 8 caracteres, com pelo menos uma letra e um número.';return}
+  if(!token&&!accessToken){s.textContent=hs.get('error_description')?'Este link expirou ou já foi utilizado.':'Link inválido.';return}
+  try{
+    const r=await fetch('/api/auth/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(token?{token,password:p1.value}:{access_token:accessToken,password:p1.value})});
+    let j={};try{j=await r.json()}catch{}
+    if(!r.ok){s.textContent=j.detail||'Não foi possível redefinir.';return}
+    s.style.color='var(--green)';s.textContent='Senha atualizada. Por segurança, as outras sessões foram encerradas. Você já pode entrar.'
+  }catch{
+    s.textContent='Não foi possível acessar o servidor. Tente novamente mais tarde.'
+  }
+}
+if(location.hash)history.replaceState(null,'',location.pathname+location.search);
+</script></body></html>
