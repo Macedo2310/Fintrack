@@ -794,6 +794,8 @@ function setMascotOpen(open){
   $("#mascotToggle")?.setAttribute("aria-expanded",String(open));
 }
 function updateMascotContext(page,fromWelcome=false){
+  const shell=$("#mascot");
+  if(shell){ const hide=page==="finbot"; shell.hidden=hide; if(hide) setMascotOpen(false); }
   const preset=mascotPresets[page]||mascotPresets.dashboard;
   let text=preset.text;
   if(fromWelcome && state.me?.name){

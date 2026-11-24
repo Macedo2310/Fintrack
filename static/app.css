@@ -58,6 +58,7 @@ body .ambient-grid{
 .messages{scroll-behavior:smooth}
 
 /* ===== Mascote global ===== */
+.mascot[hidden]{display:none}
 .mascot{
   position:fixed;right:20px;bottom:18px;z-index:45;display:flex;align-items:flex-end;gap:12px;
 }
