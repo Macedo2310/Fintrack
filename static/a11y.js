@@ -130,7 +130,8 @@
 
     const fab = document.createElement('button');
     fab.type = 'button'; fab.className = 'a11y-fab';
-    fab.innerHTML = '<span aria-hidden="true">♿</span><b>Acessibilidade</b>';
+    fab.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8" fill="currentColor" stroke="none"/><path d="M5 8.5l7 1.5 7-1.5M12 10v4.5M12 14.5l-3.5 6M12 14.5l3.5 6"/></svg><span class="sr-only">Acessibilidade</span>';
+    fab.title = 'Acessibilidade';
     fab.setAttribute('aria-expanded', 'false'); fab.setAttribute('aria-controls', 'a11y-panel');
     const panel = document.createElement('div');
     panel.id = 'a11y-panel'; panel.className = 'a11y-panel'; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-labelledby', 'a11y-title');
