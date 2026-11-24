@@ -4,13 +4,13 @@ Projeto Supabase: **Fintrack** (`chzaruypbunxuhftpymj`, us-west-2, PostgreSQL 17
 Data: 17/11/2026. Base analisada: `FinTrack-0.6.1` (FastAPI + SQLite).
 
 Situação em uma linha: **o banco foi criado e testado no projeto Fintrack e o backend foi portado
-(`app_supabase.py`) e validado no Supabase real em 24/11/2026; falta o SMTP, a migração dos dados e os vídeos** (seção 12).
+(`app_supabase.py`) e validado no Supabase real em 24/11/2026; falta o SMTP e a migração dos dados** (seção 12).
 
 | Item | Criado | Testado | Observação |
 |---|---|---|---|
 | 13 migrações (schemas, tabelas, RLS, RPCs, Storage, jobs, conteúdo) | Sim, aplicadas no Fintrack | Sim (105 verificações, 2 execuções) | Testes em transação desfeita; nada ficou gravado |
 | Conteúdo do curso, gabaritos e 16 categorias | Sim | Sim | Gerado de `education_content.py` |
-| Buckets `avatars`, `receipts`, `education-videos` | Sim | Políticas sim; envio de arquivo não | Os MP4 ainda não foram enviados |
+| Buckets `avatars`, `receipts`, `education-videos` | Sim | Sim | Os 4 MP4 enviados em 24/11/2026 (SHA-256 igual ao cadastrado); o app entrega por URL assinada |
 | pg_cron (recorrências a cada 15 min, manutenção diária) | Sim | Sim: em 24/11 o último job rodou às 12:00 UTC, 0 erros em `job_runs` | |
 | Teste de concorrência com 8 requisições | Sim | Sim: `03_concorrencia_api.py` aprovado 3× em 24/11/2026 | `02_…py` (conexão direta) segue opcional: precisa da senha do banco |
 | Script de migração SQLite → Supabase | Sim | Só o modo `simular` (banco de QA) | `aplicar` não executado |
@@ -312,7 +312,6 @@ Advisors do Supabase após a 0012:
 - Configuração do painel (seção 8) pendente: SMTP próprio e, depois dele, o modelo do e-mail de redefinição.
 - Teste de concorrência: aprovado pela API (`03_concorrencia_api.py`); a versão por conexão direta (`02_…`) é opcional.
 - Migração dos dados **não executada**. O banco de QA tem só contas de teste e não deve ir para produção.
-- Vídeos ainda não enviados ao Storage.
 - `EXPLAIN (ANALYZE, BUFFERS)` não foi rodado: com o banco vazio o plano não é representativo. Rodar depois de importar dados.
 - Exclusão de arquivos do Storage junto com a conta depende do backend.
 - Exportação/importação dos dados `localStorage` da edição GitHub Pages não implementada.
