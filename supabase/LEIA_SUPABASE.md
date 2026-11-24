@@ -4,17 +4,17 @@ Projeto Supabase: **Fintrack** (`chzaruypbunxuhftpymj`, us-west-2, PostgreSQL 17
 Data: 17/11/2026. Base analisada: `FinTrack-0.6.1` (FastAPI + SQLite).
 
 Situação em uma linha: **o banco foi criado e testado no projeto Fintrack e o backend foi portado
-(`app_supabase.py`); falta configurar a chave secreta e o e-mail no painel, rodar o teste de integração e migrar os dados** (seção 12).
+(`app_supabase.py`) e validado no Supabase real em 24/11/2026; falta o SMTP, a migração dos dados e os vídeos** (seção 12).
 
 | Item | Criado | Testado | Observação |
 |---|---|---|---|
 | 13 migrações (schemas, tabelas, RLS, RPCs, Storage, jobs, conteúdo) | Sim, aplicadas no Fintrack | Sim (105 verificações, 2 execuções) | Testes em transação desfeita; nada ficou gravado |
 | Conteúdo do curso, gabaritos e 16 categorias | Sim | Sim | Gerado de `education_content.py` |
 | Buckets `avatars`, `receipts`, `education-videos` | Sim | Políticas sim; envio de arquivo não | Os MP4 ainda não foram enviados |
-| pg_cron (recorrências a cada 15 min, manutenção diária) | Sim | Função testada; agendamento não observado rodando | |
-| Teste de concorrência com 8 conexões | Script pronto | **Não executado** | Precisa da senha do banco no seu terminal |
+| pg_cron (recorrências a cada 15 min, manutenção diária) | Sim | Sim: em 24/11 o último job rodou às 12:00 UTC, 0 erros em `job_runs` | |
+| Teste de concorrência com 8 requisições | Sim | Sim: `03_concorrencia_api.py` aprovado 3× em 24/11/2026 | `02_…py` (conexão direta) segue opcional: precisa da senha do banco |
 | Script de migração SQLite → Supabase | Sim | Só o modo `simular` (banco de QA) | `aplicar` não executado |
-| Backend FastAPI usando Supabase (`app_supabase.py`, 72 rotas) | Sim | Testes sem rede (8) e chamadas reais sem conta; **integração completa não executada** | Seção 8 |
+| Backend FastAPI usando Supabase (`app_supabase.py`, 72 rotas) | Sim | Sim: `test_supabase_integracao.py` aprovado em 24/11/2026 (contas temporárias apagadas, 0 arquivos restantes) | Seção 8 |
 
 ---
 
@@ -279,8 +279,13 @@ O que ele comprova:
 - lembretes sem duplicar e leitura que não pode ser desfeita; indicadores indisponíveis sem número inventado;
 - painel com 6 meses.
 
-`supabase/tests/02_concorrencia_reservas.py`: 8 conexões simultâneas. **Ainda não executado** (precisa de
-`SUPABASE_DB_URL`). O bloqueio usado (`FOR UPDATE` no perfil da conta) foi revisado, mas não exercitado com conexões paralelas.
+`supabase/tests/03_concorrencia_api.py`: 8 requisições simultâneas pela Data API, com o token de uma conta temporária
+(o mesmo caminho do app; só usa as chaves do `.env`). **Aprovado 3 vezes em 24/11/2026:**
+- mesma chave de idempotência 8× ao mesmo tempo → 1 evento gravado, R$ 10 reservados;
+- 8 reservas de R$ 80 com R$ 90 disponíveis → 1 aprovada, 7 recusadas com 422 "O valor excede seu saldo disponível".
+
+`supabase/tests/02_concorrencia_reservas.py` faz o mesmo com 8 conexões diretas ao Postgres (precisa de `SUPABASE_DB_URL`
+e do `psycopg`); ficou opcional.
 
 Advisors do Supabase após a 0012:
 - Restam avisos informativos esperados: tabelas privadas sem política, que é intencional (só service_role), e índices
@@ -291,7 +296,7 @@ Advisors do Supabase após a 0012:
 
 1. Aplicar os arquivos de `supabase/migrations` em ordem: `supabase db push` com a CLI, ou o SQL Editor, um por vez.
 2. Rodar `supabase/tests/01_rls_e_regras.sql` no SQL Editor. O resultado esperado é o erro `TESTES_OK: 105 verificações aprovadas`.
-3. Rodar `02_concorrencia_reservas.py`. O resultado esperado é `OK - exatamente 1 reserva aprovada`.
+3. Rodar `03_concorrencia_api.py` (ou `02_concorrencia_reservas.py`, com a senha do banco). O resultado esperado é `RESULTADO: OK`.
 4. Enviar os vídeos: `migrar_sqlite.py videos`.
 5. Configurar: `update private.app_settings set value='true' where key='email_delivery_ready'` (só com SMTP pronto) e,
    se quiser código de professor, `insert into private.app_settings values ('professor_signup_code_sha256', to_jsonb(encode(extensions.digest('<código>','sha256'),'hex')))`.
@@ -303,9 +308,9 @@ Advisors do Supabase após a 0012:
 
 ## 12. Pendências, riscos e dependências
 
-- **Teste de integração do backend não executado** (`tests/test_supabase_integracao.py`): precisa da chave secreta no `.env` e cria 3 contas temporárias que apaga no final. Até ele rodar, o critério "a aplicação consegue cadastrar, entrar…" está implementado mas não comprovado.
-- Configuração do painel (seção 8) pendente: chave secreta, URLs, modelo do e-mail de redefinição e SMTP.
-- Teste de concorrência com conexões reais **não executado**.
+- Teste de integração do backend **aprovado em 24/11/2026** (`tests/test_supabase_integracao.py`, 72 s); suíte local: 75 aprovados, 1 pulado.
+- Configuração do painel (seção 8) pendente: SMTP próprio e, depois dele, o modelo do e-mail de redefinição.
+- Teste de concorrência: aprovado pela API (`03_concorrencia_api.py`); a versão por conexão direta (`02_…`) é opcional.
 - Migração dos dados **não executada**. O banco de QA tem só contas de teste e não deve ir para produção.
 - Vídeos ainda não enviados ao Storage.
 - `EXPLAIN (ANALYZE, BUFFERS)` não foi rodado: com o banco vazio o plano não é representativo. Rodar depois de importar dados.
