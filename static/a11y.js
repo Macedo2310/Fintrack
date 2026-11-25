@@ -83,9 +83,9 @@
   const PROFILES = [
     { id: 'baixa-visao', icon: '👁️', name: 'Baixa visão', set: { zoom: '130', contrast: true, readableFont: true, links: true, focus: true, cursor: true } },
     { id: 'daltonismo', icon: '🎨', name: 'Daltonismo', set: { cvd: true } },
-    { id: 'surdez', icon: '🧏', name: 'Surdez', set: { libras: true, visualAlerts: true } },
+    { id: 'surdez', icon: '🧏', name: 'Deficiência auditiva', set: { libras: true, visualAlerts: true } },
     { id: 'dislexia', icon: '📖', name: 'Dislexia / TDAH', set: { readableFont: true, spacing: true, guide: true, motion: true } },
-    { id: 'cegueira', icon: '🔊', name: 'Cegueira / voz', set: { clickToRead: true, focus: true, motion: true } },
+    { id: 'cegueira', icon: '🔊', name: 'Deficiência visual', set: { clickToRead: true, focus: true, motion: true } },
     { id: 'calma', icon: '🧘', name: 'Menos distração', set: { motion: true, spacing: true } },
   ];
   const profileOn = p => Object.entries(p.set).every(([k, v]) => prefs[k] === v);
