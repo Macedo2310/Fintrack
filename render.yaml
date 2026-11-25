@@ -33,6 +33,6 @@ services:
       - key: APP_BASE_URL               # ex.: https://fintrack.onrender.com (ou o seu domínio)
         sync: false
       - key: FINTRACK_GOOGLE_ENABLED
-        value: "0"
+        value: "1"
       - key: LOG_LEVEL
         value: INFO
