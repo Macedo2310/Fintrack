@@ -982,7 +982,9 @@ def call_ai(messages):
         # sem cota ou inexistente, tenta o próximo.
         models=[m.strip() for m in os.getenv("AI_MODEL","").split(",") if m.strip()]
         last=None
-        for model in models:
+        # Duas voltas pela lista: no plano grátis o "503 alta demanda" costuma passar em segundos.
+        for attempt,model in enumerate(models*2):
+            if attempt==len(models):time.sleep(2)
             payload=json.dumps({"model":model,"messages":messages,"temperature":0.3}).encode()
             req=urllib.request.Request(os.getenv("AI_PROVIDER_URL"),data=payload,headers={"Content-Type":"application/json","Authorization":"Bearer "+os.getenv("AI_API_KEY")},method="POST")
             try:
