@@ -10,6 +10,9 @@ services:
     startCommand: python run.py
     healthCheckPath: /api/health
     autoDeploy: true
+    domains:              # domínio próprio (DNS na Locaweb: A @ → IP do Render; CNAME www → fintrack-c9nz.onrender.com)
+      - fintrackedu.com.br
+      - www.fintrackedu.com.br
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
