@@ -278,9 +278,12 @@ def one(rows: list, message="Registro não encontrado.") -> dict:
 
 
 # ===================== autenticação =====================
+ADULT_ONLY = "O FinTrack é destinado a pessoas com 18 anos ou mais. Confirme sua idade para continuar."
+
+
 class RegisterIn(BaseModel):
     name: str = Field(min_length=2, max_length=100); email: str = Field(min_length=3, max_length=320)  # validado por check_email
-    password: str = Field(min_length=8, max_length=128); role: str; terms: bool
+    password: str = Field(min_length=8, max_length=128); role: str; terms: bool; adult: bool = False
 
 
 class LoginIn(BaseModel):
@@ -299,7 +302,7 @@ class ResetIn(BaseModel):
 
 
 class OnboardingIn(BaseModel):
-    token: str = ""; name: str = Field(min_length=2, max_length=100); role: str; terms: bool
+    token: str = ""; name: str = Field(min_length=2, max_length=100); role: str; terms: bool; adult: bool = False
 
 
 @app.post("/api/auth/register")
@@ -309,6 +312,8 @@ def register(b: RegisterIn, request: Request):
         raise HTTPException(422, "Perfil inválido.")
     if not b.terms:
         raise HTTPException(422, "Aceite os termos e a política de privacidade.")
+    if not b.adult:
+        raise HTTPException(422, ADULT_ONLY)
     legacy.validate_password(b.password)
     checked = check_email(b.email)
     if not checked.ok:
@@ -448,6 +453,8 @@ def onboarding_complete(b: OnboardingIn, request: Request):
         raise HTTPException(422, "Perfil inválido.")
     if not b.terms:
         raise HTTPException(422, "Aceite os termos e a política de privacidade.")
+    if not b.adult:
+        raise HTTPException(422, ADULT_ONLY)
     out = sb.rpc("complete_onboarding", {"p_name": b.name, "p_role": b.role, "p_accept_terms": True,
                                           "p_professor_code": request.headers.get("x-professor-signup-code") or None}, s.token)
     return {"status": "ok", "next": out["next"]}

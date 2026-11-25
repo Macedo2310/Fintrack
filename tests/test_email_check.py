@@ -50,7 +50,14 @@ def test_signup_endpoint_blocks_bad_email_before_supabase(monkeypatch):
     called = []
     monkeypatch.setattr(mod.sb, "sign_up", lambda *a, **k: called.append(1))
     c = TestClient(mod.app)
-    r = c.post("/api/auth/register", json={"name": "Enzo", "email": "enzo@gmial.com", "password": "Senha123ok", "role": "aluno", "terms": True})
+    r = c.post("/api/auth/register", json={"name": "Enzo", "email": "enzo@gmial.com", "password": "Senha123ok", "role": "aluno", "terms": True, "adult": True})
     assert r.status_code == 422 and "enzo@gmail.com" in r.json()["detail"] and not called
     j = c.post("/api/auth/check-email", json={"email": "enzo@gmial.com"}).json()
     assert j["ok"] is False and j["suggestion"] == "enzo@gmail.com"
+
+
+def test_signup_requires_adult(monkeypatch):
+    import app_supabase as a
+    from fastapi.testclient import TestClient
+    r = TestClient(a.app).post("/api/auth/register", json={"name": "Enzo", "email": "enzo@gmail.com", "password": "Senha123ok", "role": "aluno", "terms": True})
+    assert r.status_code == 422 and "18 anos" in r.json()["detail"]
