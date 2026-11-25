@@ -37,7 +37,7 @@ services:
       - key: AI_PROVIDER_URL          # Gemini (Google AI Studio) pelo endereço compatível com OpenAI
         value: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
       - key: AI_MODEL
-        value: gemini-flash-latest
+        value: gemini-2.5-flash,gemini-2.5-flash-lite,gemini-flash-latest
       - key: AI_API_KEY               # secreta: preencher no painel
         sync: false
       - key: LOG_LEVEL
