@@ -275,11 +275,11 @@ def fetch_indicator(key):
     if key in ("USD", "EUR"):
         today = local_today()
         query = urllib.parse.urlencode({"@moeda": f"'{key}'", "@dataInicial": f"'{(today-timedelta(days=14)):%m-%d-%Y}'",
-            "@dataFinalCotacao": f"'{today:%m-%d-%Y}'", "$format": "json", "$top": "1", "$orderby": "dataHoraCotacao desc",
-            "$filter": "tipoBoletim eq 'Fechamento'"}, quote_via=urllib.parse.quote)
+            "@dataFinalCotacao": f"'{today:%m-%d-%Y}'", "$format": "json", "$top": "1", "$orderby": "dataHoraCotacao desc"}, quote_via=urllib.parse.quote)
         url = "https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoMoedaPeriodo(moeda=@moeda,dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"+query
         row = fetch_json(url)["value"][0]
         value, observed = float(row["cotacaoVenda"]), row["dataHoraCotacao"][:10]
+        bulletin, hour = row.get("tipoBoletim") or "Fechamento", row["dataHoraCotacao"][11:16]
         label, unit = ("Dólar" if key == "USD" else "Euro"), "BRL · PTAX venda"
     else:
         series, label, unit = {"SELIC": (432, "Meta Selic", "% ao ano"), "IPCA": (433, "IPCA", "% no mês")}[key]
@@ -297,8 +297,10 @@ def fetch_indicator(key):
     elif key == "SELIC":
         # A série 432 se estende até a próxima reunião do Copom; a data pode estar no futuro.
         reference = f"Meta vigente na consulta (série com dados até {br(observed)})" if observed > local_today().isoformat() else f"Meta vigente em {br(observed)}"
-    else:
+    elif bulletin == "Fechamento":
         reference = f"Fechamento de {br(observed)}"
+    else:  # boletins do dia (Abertura/Intermediário) até sair o fechamento, por volta das 13h
+        reference = f"Boletim {bulletin.lower()} de {br(observed)}, {hour}"
     return {"key": key, "label": label, "value": value, "unit": unit, "observed_at": observed, "reference": reference,
             "source": "Banco Central do Brasil", "source_url": url}
 

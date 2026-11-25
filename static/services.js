@@ -13,7 +13,7 @@
 
   const market = document.createElement('div');
   market.className = 'card market-panel';
-  market.innerHTML = `<h2>Moedas e indicadores</h2><p class="muted">Referências educativas do Banco Central do Brasil, consultadas pelo servidor. PTAX de fechamento, não é cotação em tempo real nem preço negociável; não representa saldo ou investimento seu.</p><div id="marketItems" class="market-grid" aria-live="polite">Carregando indicadores…</div><button class="btn small" id="marketRetry">Atualizar indicadores</button>`;
+  market.innerHTML = `<h2>Moedas e indicadores</h2><p class="muted">Referências educativas do Banco Central do Brasil, consultadas pelo servidor. Dólar e euro: último boletim PTAX do dia (o fechamento sai por volta das 13h); pode diferir da cotação comercial de bancos e casas de câmbio e não é preço negociável; não representa saldo ou investimento seu.</p><div id="marketItems" class="market-grid" aria-live="polite">Carregando indicadores…</div><button class="btn small" id="marketRetry">Atualizar indicadores</button>`;
   document.querySelector('#page-dashboard .metrics').after(market);
   const page = document.createElement('section');
   page.id = 'page-notifications'; page.className = 'page';
@@ -30,7 +30,7 @@
       const data = await api('/api/market');
       const names = {USD:'Dólar', EUR:'Euro', SELIC:'Meta Selic', IPCA:'IPCA'};
       const value = item => item.key === 'USD' || item.key === 'EUR'
-        ? Number(item.value).toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:4, maximumFractionDigits:4})
+        ? Number(item.value).toLocaleString('pt-BR', {style:'currency', currency:'BRL', minimumFractionDigits:2, maximumFractionDigits:2})
         : Number(item.value).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
       $('#marketItems').innerHTML = data.items.map(item => `<article><span>${esc(item.label)}</span><strong>${esc(value(item))}</strong><small>${esc(item.unit)}</small><small>${esc(item.reference || 'Referência: ' + brdate(item.observed_at))}</small><small>Consulta: ${esc(new Date(item.fetched_at).toLocaleString('pt-BR'))}</small>${item.stale ? '<span class="market-status old">Antigo: último valor salvo</span>' : '<span class="market-status ok">Atualizado</span>'}<small>Fonte: ${esc(item.source || 'Banco Central do Brasil')}</small></article>`).join('')
         + data.unavailable.map(k => `<article><span>${esc(names[k] || k)}</span><strong>—</strong><span class="market-status off">Indisponível</span><small>A fonte oficial não respondeu e não há valor salvo. Nenhum número é estimado.</small></article>`).join('');
@@ -85,11 +85,20 @@
   $('#reminderPrev').onclick = () => { currentPage--; loadReminders(); };
   $('#reminderNext').onclick = () => { currentPage++; loadReminders(); };
   $('#marketRetry').onclick = loadMarket;
+  // Indicadores: recarrega ao voltar ao painel ou à aba e a cada 5 min com o painel visível.
+  let marketAt = 0;
+  const refreshMarket = (force = false) => {
+    if (document.hidden || !$('#page-dashboard')?.classList.contains('active')) return;
+    if (force || Date.now() - marketAt > 60000) { marketAt = Date.now(); loadMarket(); }
+  };
   document.addEventListener('fintrack:navigate', event => {
     if (event.detail === 'notifications') { loadPreferences(); loadReminders(); }
+    if (event.detail === 'dashboard') setTimeout(refreshMarket, 0);
   });
+  setInterval(() => refreshMarket(true), 5 * 60000);
+  document.addEventListener('visibilitychange', () => refreshMarket());
   // Boot is asynchronous in app.js; wait for its first successful navigation.
-  document.addEventListener('fintrack:navigate', () => { loadMarket(); loadReminders(); }, {once:true});
+  document.addEventListener('fintrack:navigate', () => { marketAt = Date.now(); loadMarket(); loadReminders(); }, {once:true});
   setInterval(() => { if (!document.hidden) loadReminders(); }, 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) loadReminders(); });
 })();
