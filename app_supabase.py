@@ -882,7 +882,7 @@ def conversation_delete(cid: str, request: Request):
 def ai_status(request: Request):
     session(request)
     return {"configured": legacy.ai_ready(), "provider": legacy.ai_provider_name(),
-            "model": legacy.openai_model() if os.getenv("OPENAI_API_KEY") else (os.getenv("AI_MODEL") or None)}
+            "model": legacy.openai_model() if os.getenv("OPENAI_API_KEY") else ((os.getenv("AI_MODEL") or "").split(",")[0].strip() or None)}
 
 
 SYSTEM_PROMPT = """Você é o FinBot, assistente de educação e organização financeira do FinTrack.
