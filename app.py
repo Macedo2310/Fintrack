@@ -980,7 +980,15 @@ def call_ai(messages):
     if os.getenv("AI_PROVIDER_URL") and os.getenv("AI_API_KEY") and os.getenv("AI_MODEL"):
         payload=json.dumps({"model":os.getenv("AI_MODEL"),"messages":messages,"temperature":0.3}).encode()
         req=urllib.request.Request(os.getenv("AI_PROVIDER_URL"),data=payload,headers={"Content-Type":"application/json","Authorization":"Bearer "+os.getenv("AI_API_KEY")},method="POST")
-        with urllib.request.urlopen(req,timeout=45) as r:o=json.loads(r.read().decode())
+        try:
+            with urllib.request.urlopen(req,timeout=int(os.getenv("AI_TIMEOUT_SECONDS","60"))) as r:o=json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:
+            if e.code in (401,403):raise RuntimeError("A chave do serviço de IA foi recusada. Verifique AI_API_KEY.")
+            if e.code==429:raise RuntimeError("A IA atingiu o limite de uso por agora. Tente de novo em alguns minutos.")
+            if e.code==404:raise RuntimeError(f"O modelo de IA {os.getenv('AI_MODEL')} não foi encontrado. Verifique AI_MODEL.")
+            raise RuntimeError(f"O serviço de IA retornou erro HTTP {e.code}. Tente novamente.")
+        except (urllib.error.URLError,TimeoutError):
+            raise RuntimeError("Não foi possível falar com o serviço de IA agora. Tente novamente.")
         try:return o["choices"][0]["message"]["content"]
         except:raise RuntimeError("Resposta de IA em formato inesperado.")
     raise RuntimeError("A IA ainda não está configurada.")

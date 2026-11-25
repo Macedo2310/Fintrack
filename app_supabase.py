@@ -931,7 +931,7 @@ def analyze_spending(request: Request):
     if not r:
         return {"has_data": False, "message": "Ainda não há transações no período para analisar.", "period": period}
     if not legacy.ai_ready():
-        raise HTTPException(503, "Há dados para análise, mas a IA ainda não está configurada. Configure OPENAI_API_KEY no arquivo .env.")
+        raise HTTPException(503, "Há dados para análise, mas a IA ainda não está configurada no servidor.")
     try:
         answer = legacy.call_ai([
             {"role": "system", "content": "Você é um educador financeiro. Separe dados observados de sugestões e informe limitações. Não invente renda, hábitos ou registros."},
