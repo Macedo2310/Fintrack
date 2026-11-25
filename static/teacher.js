@@ -15,7 +15,7 @@ function qEditor(q = { q: '', options: ['', '', '', ''], answer: 0, why: '' }, i
     <div class="field"><textarea class="q-text" maxlength="300" rows="2" aria-label="Enunciado da pergunta ${i + 1}" placeholder="Enunciado">${esc(q.q)}</textarea></div>
     ${opts.slice(0, 5).map((o, j) => `<label style="display:flex;gap:8px;align-items:center;margin-top:6px">
       <input type="radio" name="ans${i}" value="${j}" ${q.answer === j ? 'checked' : ''} aria-label="Marcar alternativa ${j + 1} como correta">
-      <input class="q-opt" maxlength="150" value="${esc(o)}" placeholder="Alternativa ${j + 1}${j > 1 ? ' (opcional)' : ''}" style="flex:1"></label>`).join('')}
+      <input class="q-opt input" maxlength="150" value="${esc(o)}" placeholder="Alternativa ${j + 1}${j > 1 ? ' (opcional)' : ''}" style="flex:1"></label>`).join('')}
     <div class="field" style="margin-top:6px"><input class="q-why" maxlength="300" value="${esc(q.why || '')}" placeholder="Explicação da resposta (opcional, aparece após o aluno concluir)"></div>
     <button type="button" class="btn small danger q-del" style="margin-top:8px">Remover pergunta</button></fieldset>`;
 }
