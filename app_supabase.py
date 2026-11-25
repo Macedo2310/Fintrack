@@ -27,6 +27,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 
+import teacher_templates
 import app as legacy  # reaproveita validações, IA, e-mail e conteúdo estático da 0.6.x (sem usar o SQLite)
 import backend_services
 from backend_services import local_today
@@ -1039,6 +1040,15 @@ class CodeIn(BaseModel):
     code: str
 
 
+class ActivityIn(BaseModel):
+    type: str; title: str = Field(min_length=3, max_length=120); config: dict
+    due_date: Optional[str] = None; instructions: Optional[str] = Field(default=None, max_length=1000)
+
+
+class QuizAnswersIn(BaseModel):
+    answers: list[int] = Field(max_length=15)
+
+
 class AssignmentIn(BaseModel):
     content_key: str = Field(max_length=120); content_type: str = "aula"; due_date: Optional[str] = None
     instructions: Optional[str] = Field(default=None, max_length=1000)
@@ -1131,12 +1141,68 @@ def assignment_results(cid: str, request: Request):
     rows = sb.select("assignment_overview", s.token, class_id=f"eq.{cid}", select="*", order="created_at.desc")
     items = [{"assignment_id": r["assignment_id"], "content_key": by_lesson.get(r["lesson_id"], ("", ""))[0], "due_date": r["due_date"],
               "student_name": names.get(r["student_id"], "—"), "status": r["status"], "score": r["score"],
-              "submitted_at": r["submitted_at"], "title": by_lesson.get(r["lesson_id"], ("", "Aula"))[1], "state": r["state"]} for r in rows]
+              "submitted_at": r["submitted_at"], "title": activity_title(r, by_lesson), "state": r["state"],
+              "content_type": r["content_type"], "progress": r["progress"], "target": (r["config"] or {}).get("target")} for r in rows]
     order = {}
     for r in rows:   # atividades mais recentes primeiro; dentro de cada uma, alunos por nome (igual à 0.6.x)
         order.setdefault(r["assignment_id"], len(order))
     items.sort(key=lambda x: (order[x["assignment_id"]], x["student_name"]))
     return {"items": items}
+
+
+def activity_title(r: dict, by_lesson: dict) -> str:
+    if r.get("content_type", "aula") == "aula":
+        v = by_lesson.get(r["lesson_id"])
+        return (v[1] if isinstance(v, tuple) else (v or {}).get("title")) or "Aula"
+    return r.get("title") or ("Desafio" if r.get("content_type") == "desafio" else "Quiz")
+
+
+@app.get("/api/classes/{cid}/dashboard")
+def class_dashboard(cid: str, request: Request):
+    """Painel do professor: quanto da turma concluiu cada atividade e cada aluno (sem dados financeiros)."""
+    s = session(request)
+    students = sb.rpc("class_participants", {"p_class_id": cid}, s.token)   # 403 se não for o dono
+    by_lesson = {v["id"]: (k, v["title"]) for k, v in lesson_catalog(s).items()}
+    rows = sb.select("assignment_overview", s.token, class_id=f"eq.{cid}", select="*", order="created_at.asc")
+    acts, people = {}, {p["id"]: {"name": p["name"], "concluida": 0, "pendente": 0, "atrasada": 0} for p in students}
+    for r in rows:
+        a = acts.setdefault(r["assignment_id"], {"id": r["assignment_id"], "title": activity_title(r, by_lesson),
+                                                 "type": r["content_type"], "due_date": r["due_date"],
+                                                 "concluida": 0, "pendente": 0, "atrasada": 0})
+        a[r["state"]] += 1
+        if r["student_id"] in people:
+            people[r["student_id"]][r["state"]] += 1
+    for x in list(acts.values()) + list(people.values()):
+        x["total"] = x["concluida"] + x["pendente"] + x["atrasada"]
+        x["pct"] = round(100 * x["concluida"] / x["total"]) if x["total"] else 0
+    done = sum(a["concluida"] for a in acts.values()); total = sum(a["total"] for a in acts.values())
+    return {"students": len(students), "activities": list(acts.values()),
+            "people": sorted(people.values(), key=lambda x: (x["pct"], x["name"])),
+            "overall": {"concluida": done, "total": total, "pct": round(100 * done / total) if total else 0,
+                        "atrasada": sum(a["atrasada"] for a in acts.values())}}
+
+
+@app.get("/api/teacher/templates")
+def teacher_templates_list(request: Request):
+    s = session(request)
+    require_role(s, "professor", "Apenas professores.")
+    return teacher_templates.catalog()
+
+
+@app.post("/api/classes/{cid}/activities")
+def activity_new(cid: str, b: ActivityIn, request: Request):
+    s = session(request)
+    require_role(s, "professor", "Apenas professores lançam atividades.")
+    if b.type not in ("desafio", "quiz"):
+        raise HTTPException(422, "Tipo de atividade inválido.")
+    return sb.rpc("create_activity", {"p_class_id": cid, "p_type": b.type, "p_title": b.title, "p_config": b.config,
+                                      "p_due": parse_date(b.due_date).isoformat() if b.due_date else None,
+                                      "p_instructions": clean(b.instructions)}, s.token)
+
+
+@app.post("/api/assignments/{aid}/quiz")
+def quiz_submit(aid: str, b: QuizAnswersIn, request: Request):
+    return sb.rpc("submit_quiz", {"p_assignment_id": aid, "p_answers": b.answers}, session(request).token)
 
 
 @app.get("/api/classes/{cid}/financial-summary")
@@ -1180,8 +1246,9 @@ def assignments(request: Request):
             l = by_lesson.get(r["lesson_id"], {})
             out.append({"id": r["assignment_id"], "class_id": r["class_id"], "class_name": names.get(r["class_id"], ""),
                         "due_date": r["due_date"], "instructions": r["instructions"], "status": r["status"], "score": r["score"],
-                        "state": r["state"], "title": l.get("title", "Aula"), "module": l.get("module"), "topic": l.get("topic"),
-                        "content_key": f'{l.get("module")}:{l.get("topic")}', "created_at": r["created_at"]})
+                        "state": r["state"], "title": activity_title(r, by_lesson), "module": l.get("module"), "topic": l.get("topic"),
+                        "content_key": f'{l.get("module")}:{l.get("topic")}' if l else None, "created_at": r["created_at"],
+                        "content_type": r["content_type"], "config": r["config"], "progress": r["progress"], "attempts": r["attempts"]})
         out.sort(key=lambda x: (x["due_date"] is None, x["due_date"] or "", ""))
     else:
         rows = sb.select("assignments", s.token, teacher_id=f"eq.{s.uid}", select="*,classes(name)", order="created_at.desc")
@@ -1191,8 +1258,8 @@ def assignments(request: Request):
             l = by_lesson.get(r["lesson_id"], {})
             mine = [p for p in prog if p["assignment_id"] == r["id"]]
             out.append({**{k: v for k, v in r.items() if k != "classes"}, "class_name": r["classes"]["name"],
-                        "title": l.get("title", "Aula"), "module": l.get("module"), "topic": l.get("topic"),
-                        "content_key": f'{l.get("module")}:{l.get("topic")}', "total": len(mine),
+                        "title": activity_title(r, by_lesson), "module": l.get("module"), "topic": l.get("topic"),
+                        "content_key": f'{l.get("module")}:{l.get("topic")}' if l else None, "total": len(mine),
                         "done": sum(p["status"] == "concluida" for p in mine)})
     return {"items": out}
 

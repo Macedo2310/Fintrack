@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><title>FinTrack</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css?v=7"><link rel="stylesheet" href="mobile-services.css?v=14"><link rel="stylesheet" href="a11y.css?v=5"><script src="a11y.js?v=4"></script></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><title>FinTrack</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css?v=8"><link rel="stylesheet" href="mobile-services.css?v=14"><link rel="stylesheet" href="a11y.css?v=5"><script src="a11y.js?v=4"></script></head><body>
 <div class="ambient-grid" aria-hidden="true"></div>
 <div class="shell">
 <button class="nav-scrim" id="navScrim" aria-label="Fechar navegação" tabindex="-1"></button><aside class="side" id="appNavigation">
@@ -183,6 +183,39 @@
   <div class="form-actions"><button class="btn ghost" type="button" data-close="assignModal">Cancelar</button><button class="btn primary" type="submit" id="assignSubmit">Atribuir</button></div></form>
 </div></div>
 
+<div class="modal" id="activityModal" aria-hidden="true"><div class="dialog" style="max-width:680px">
+  <div class="dialog-head"><h2>Lançar atividade</h2><button class="close" data-close="activityModal" aria-label="Fechar">×</button></div>
+  <form id="activityForm"><input type="hidden" id="actClass">
+  <div class="tabs" id="actTabs" role="tablist" style="margin-bottom:12px"><button type="button" class="active" data-type="desafio" role="tab">Desafio prático</button><button type="button" data-type="quiz" role="tab">Quiz</button></div>
+  <div class="field"><label for="actTemplate">Modelo</label><select id="actTemplate"></select></div>
+  <div class="field" style="margin-top:12px"><label for="actTitle">Título</label><input id="actTitle" maxlength="120" required></div>
+  <div id="actChallenge" style="margin-top:12px;display:grid;grid-template-columns:2fr 1fr;gap:10px">
+    <div class="field"><label for="actKind">O aluno precisa</label><select id="actKind"></select></div>
+    <div class="field"><label for="actTarget">Quantidade</label><input id="actTarget" type="number" min="1" max="50" value="1"></div>
+    <p class="muted" style="grid-column:1/-1;font-size:12px;margin:0">O FinTrack confere sozinho e conta só o que o aluno fizer depois do lançamento. Você vê se ele concluiu e quantas ações fez, nunca os valores.</p>
+  </div>
+  <div id="actQuiz" class="hidden" style="margin-top:12px"><div id="actQuestions"></div>
+    <button type="button" class="btn small" id="actAddQ">+ Adicionar pergunta</button>
+    <p class="muted" style="font-size:12px">Marque a alternativa correta de cada pergunta. O aluno conclui com 70% de acertos e só vê o gabarito depois de concluir.</p></div>
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:12px">
+    <div class="field"><label for="actDue">Prazo (opcional)</label><input id="actDue" type="date"></div>
+    <div class="field"><label for="actInstructions">Instruções (opcional)</label><input id="actInstructions" maxlength="1000"></div>
+  </div>
+  <div id="actStatus" class="status" role="status"></div>
+  <div class="form-actions"><button class="btn ghost" type="button" data-close="activityModal">Cancelar</button><button class="btn primary" type="submit" id="actSubmit">Lançar para a turma</button></div></form>
+</div></div>
+
+<div class="modal" id="dashModal" aria-hidden="true"><div class="dialog" style="max-width:760px">
+  <div class="dialog-head"><h2>Painel da turma</h2><button class="close" data-close="dashModal" aria-label="Fechar">×</button></div>
+  <div id="dashBody"></div>
+</div></div>
+
+<div class="modal" id="quizModal" aria-hidden="true"><div class="dialog" style="max-width:640px">
+  <div class="dialog-head"><h2 id="quizTitle">Quiz</h2><button class="close" data-close="quizModal" aria-label="Fechar">×</button></div>
+  <form id="quizForm"><div id="quizBody"></div><div id="quizStatus" class="status" role="status"></div>
+  <div class="form-actions"><button class="btn ghost" type="button" data-close="quizModal">Fechar</button><button class="btn primary" type="submit" id="quizSubmit">Enviar respostas</button></div></form>
+</div></div>
+
 <div class="modal" id="infoModal" aria-hidden="true"><div class="dialog">
   <div class="dialog-head"><h2 id="infoTitle">Detalhes</h2><button class="close" data-close="infoModal" aria-label="Fechar">×</button></div>
   <div id="infoBody"></div>
@@ -209,6 +242,7 @@
 
 <div class="toast" id="toast"></div>
 <script src="receipt-ocr.js?v=1"></script>
-<script src="app.js?v=13"></script>
+<script src="app.js?v=14"></script>
+<script src="teacher.js?v=1"></script>
 <script src="intro-video.js?v=3"></script>
 <script src="services.js?v=8"></script><script src="accessibility.js?v=6"></script></body></html>
