@@ -469,7 +469,7 @@ def avatar_view(row: Optional[dict]):
 def me(request: Request):
     s = session(request)
     p = s.profile()
-    settings = one(sb.select("user_settings", s.token, user_id=f"eq.{s.uid}", select="theme,tips,goal_alerts,weekly_email,chart_type"), "Sessão expirada.")
+    settings = one(sb.select("user_settings", s.token, user_id=f"eq.{s.uid}", select="theme,tips,goal_alerts,weekly_email,chart_type,tour_done"), "Sessão expirada.")
     av = sb.select("user_avatars", s.token, user_id=f"eq.{s.uid}", select="kind,preset,bg,updated_at")
     user = sb.get_user(s.token)
     providers = {i.get("provider") for i in user.get("identities") or []}
@@ -1276,7 +1276,7 @@ def class_share(cid: str, b: ShareIn, request: Request):
 # ===================== preferências, perfil, lembretes, indicadores =====================
 class SettingsIn(BaseModel):
     theme: Optional[str] = None; tips: Optional[bool] = None; goal_alerts: Optional[bool] = None
-    weekly_email: Optional[bool] = None; chart_type: Optional[str] = None
+    weekly_email: Optional[bool] = None; chart_type: Optional[str] = None; tour_done: Optional[bool] = None
 
 
 class ProfileIn(BaseModel):
@@ -1296,7 +1296,7 @@ def settings(b: SettingsIn, request: Request):
         patch.pop("theme")
     if patch.get("chart_type") not in (None, "line", "bar", "pie"):
         patch.pop("chart_type")
-    cols = "theme,tips,goal_alerts,weekly_email,chart_type"
+    cols = "theme,tips,goal_alerts,weekly_email,chart_type,tour_done"
     rows = sb.update("user_settings", patch, s.token, user_id=f"eq.{s.uid}") if patch else \
         sb.select("user_settings", s.token, user_id=f"eq.{s.uid}", select=cols)
     return {"status": "ok", "settings": {k: one(rows)[k] for k in cols.split(",")}}

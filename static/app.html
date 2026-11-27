@@ -1,4 +1,4 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><title>FinTrack</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css?v=8"><link rel="stylesheet" href="mobile-services.css?v=14"><link rel="stylesheet" href="a11y.css?v=5"><script src="a11y.js?v=4"></script></head><body>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content"><title>FinTrack</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="app.css?v=9"><link rel="stylesheet" href="mobile-services.css?v=14"><link rel="stylesheet" href="a11y.css?v=5"><script src="a11y.js?v=4"></script></head><body>
 <div class="ambient-grid" aria-hidden="true"></div>
 <div class="shell">
 <button class="nav-scrim" id="navScrim" aria-label="Fechar navegação" tabindex="-1"></button><aside class="side" id="appNavigation">
@@ -123,6 +123,7 @@
     <div class="card"><h2>Perfil</h2><div class="profile-av"><span class="av" id="profileAvatar" aria-hidden="true"></span><div><a class="btn small" href="avatar.html?edit=1">Trocar avatar</a><div class="muted" style="font-size:12px;margin-top:6px">Use uma arte do FinTrack ou sua foto.</div></div></div><div class="field"><label for="profileName">Nome</label><input id="profileName"></div><div class="field" style="margin-top:12px"><label for="profileEmail">E-mail</label><input id="profileEmail" disabled></div><p class="muted" style="font-size:12px;margin:6px 0 0">Forma de entrar: <span id="profileAuth">—</span></p><button class="btn primary" id="saveProfile" style="margin-top:14px">Salvar perfil</button><div id="profileStatus" class="status"></div></div>
     <div class="card"><h2>Aparência e notificações</h2><div class="switchrow"><div><b>Tema claro</b><div class="muted">Aplicado imediatamente e salvo.</div></div><button class="switch" id="themeSwitch" aria-label="Alternar tema claro" aria-pressed="false"><i></i></button></div><div class="switchrow"><div><b>Dicas financeiras</b></div><button class="switch" id="tipsSwitch" aria-label="Ativar ou desativar dicas financeiras" aria-pressed="false"><i></i></button></div><div class="switchrow"><div><b>Alertas de metas</b></div><button class="switch" id="goalsSwitch" aria-label="Ativar ou desativar alertas de metas" aria-pressed="false"><i></i></button></div><div class="switchrow"><div><b>Resumo semanal por e-mail</b><div class="muted" id="weeklyNote">Depende da infraestrutura de e-mail.</div></div><button class="switch" id="weeklySwitch" aria-label="Ativar ou desativar resumo semanal por e-mail" aria-pressed="false"><i></i></button></div></div>
   </div>
+  <div class="card" style="margin-top:14px"><div class="switchrow" style="border:0;padding:0"><div><h2 style="margin:0 0 4px">Tutorial de boas-vindas</h2><div class="muted">Reveja o passo a passo de como usar o FinTrack.</div></div><button class="btn small" id="replayTour" type="button">Ver tutorial de novo</button></div></div>
   <div class="card" style="margin-top:14px"><h2>Privacidade por turma</h2><p class="muted">Desativado por padrão. Ao ativar, compartilhe apenas resumos autorizados com o professor daquela turma. Comprovantes e conversas privadas nunca entram nesse fluxo.</p><div id="privacyClasses" style="margin-top:12px"></div></div>
   <div id="deploymentNotice" class="notice hidden" style="margin-top:14px"></div>
   <div class="card mobile-account-actions" style="margin-top:14px">
@@ -242,7 +243,8 @@
 
 <div class="toast" id="toast"></div>
 <script src="receipt-ocr.js?v=1"></script>
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
+<script src="tour.js?v=1"></script>
 <script src="teacher.js?v=2"></script>
 <script src="intro-video.js?v=3"></script>
 <script src="services.js?v=8"></script><script src="accessibility.js?v=6"></script></body></html>

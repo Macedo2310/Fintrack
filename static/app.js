@@ -57,7 +57,7 @@ $$(".nav button").forEach(b=>b.onclick=()=>setPage(b.dataset.page));
 
 async function boot(){
   state.me=await api("/api/auth/me");if(!state.me.avatar){location.href="avatar.html";return}paintAvatar($("#sideAvatar"),state.me.avatar,state.me.id);$("#sideName").textContent=state.me.name;$("#sideRole").textContent=state.me.role==="professor"?"Professor":"Aluno";
-  document.documentElement.dataset.theme=state.me.settings.theme||"dark";state.chartType=["line","bar","pie"].includes(state.me.settings.chart_type)?state.me.settings.chart_type:"line";initFinanceCharts();state.categories=await api("/api/categories");fillCategory(); if(typeof initMascot==="function") initMascot();
+  document.documentElement.dataset.theme=state.me.settings.theme||"dark";state.chartType=["line","bar","pie"].includes(state.me.settings.chart_type)?state.me.settings.chart_type:"line";initFinanceCharts();state.categories=await api("/api/categories");fillCategory(); const runMascot=()=>{if(typeof initMascot==="function")initMascot()}; if(state.me.settings.tour_done===false&&typeof startTour==="function")startTour(state.me.role,{onClose:runMascot});else runMascot();
   $("#dashStart").value=monthStartBR();$("#dashEnd").value=todayBR();
   $("#txDate").value=todayBR();$("#recurrenceStart").value=$("#txDate").value;
   setPage(location.hash.slice(1)||"dashboard");checkDeploymentMode()
