@@ -44,7 +44,8 @@
       const data = await api('/api/notifications?page=' + currentPage);
       bell.textContent = data.unread ? `Lembretes (${data.unread})` : 'Lembretes';
       bell.setAttribute('aria-label', `${data.unread} lembretes não lidos`);
-      $('#reminderItems').innerHTML = data.items.length ? data.items.map(n => `<article class="card reminder-item ${n.read_at ? 'is-read' : ''}"><div><small>${esc(new Date(n.created_at).toLocaleString('pt-BR'))} · ${n.read_at ? 'Lido' : 'Não lido'}</small><h2>${esc(n.title)}</h2><p>${esc(n.body)}</p></div><button class="btn" data-notification="${esc(n.id)}" data-destination="${esc(n.destination)}">${n.read_at ? 'Abrir' : 'Marcar como lido e abrir'} ${({goals:'metas', education:'aulas', classes:'turmas', transactions:'lançamentos'})[n.destination] || ''}</button></article>`).join('') : '<div class="empty">Tudo em dia. Seus próximos lembretes aparecerão aqui.</div>';
+      const help = n => n.kind === 'wellbeing' ? `<p class="reminder-help">Precisa conversar? <a href="tel:188">CVV 188</a> (grátis, 24h) · <a href="https://cvv.org.br" target="_blank" rel="noopener">cvv.org.br</a>${String(n.event_key || '').startsWith('bet') ? ' · <a href="https://www.jogadoresanonimos.com.br" target="_blank" rel="noopener">Jogadores Anônimos</a>' : ''}</p>` : '';
+      $('#reminderItems').innerHTML = data.items.length ? data.items.map(n => `<article class="card reminder-item kind-${esc(n.kind)} ${n.read_at ? 'is-read' : ''}"><div><small>${n.kind === 'wellbeing' ? '<b class="reminder-tag">Bem-estar</b> · ' : n.kind === 'security' ? '<b class="reminder-tag sec">Segurança</b> · ' : ''}${esc(new Date(n.created_at).toLocaleString('pt-BR'))} · ${n.read_at ? 'Lido' : 'Não lido'}</small><h2>${esc(n.title)}</h2><p>${esc(n.body)}</p>${help(n)}</div><button class="btn" data-notification="${esc(n.id)}" data-destination="${esc(n.destination)}">${n.read_at ? 'Abrir' : 'Marcar como lido e abrir'} ${({goals:'metas', education:'aulas', classes:'turmas', transactions:'lançamentos', finbot:'FinBot'})[n.destination] || ''}</button></article>`).join('') : '<div class="empty">Tudo em dia. Seus próximos lembretes aparecerão aqui.</div>';
       $('#reminderPrev').disabled = currentPage <= 1;
       $('#reminderNext').disabled = currentPage * 30 >= data.total;
       $('#reminderPage').textContent = `Página ${currentPage}`;
@@ -81,6 +82,7 @@
     } catch (e) { $('#reminderStatus').textContent = e.message; }
     finally { button.disabled = false; }
   };
+  document.addEventListener('fintrack:notifications', () => loadReminders());
   $('#readAll').onclick = async () => { try { await api('/api/notifications/read-all', {method:'POST'}); await loadReminders(); } catch(e) { toast(e.message,false); } };
   $('#reminderPrev').onclick = () => { currentPage--; loadReminders(); };
   $('#reminderNext').onclick = () => { currentPage++; loadReminders(); };

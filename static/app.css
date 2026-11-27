@@ -459,3 +459,9 @@ body.tour-open .mascot-tip,body.tour-open .mascot-panel{display:none!important}
 @media (max-width:560px){.tour-body{padding:16px 18px 18px}.tour-body h2{font-size:19px}.tour-actions{flex-direction:column-reverse;align-items:stretch}.tour-next{width:100%;min-height:48px}.tour-skip{width:100%}}
 @media (prefers-reduced-motion:reduce){.tour,.tour-card.in,.tour.out{animation:none}.tour-dots i{transition:none}}
 html.a11y-motion .tour,html.a11y-motion .tour-card.in,html.a11y-motion .tour.out{animation:none}
+
+/* Avisos de bem-estar e segurança */
+.reminder-item.kind-wellbeing{border-left:4px solid var(--yellow)}
+.reminder-item.kind-security{border-left:4px solid var(--red)}
+.reminder-tag{color:var(--yellow);font-weight:800}.reminder-tag.sec{color:var(--red)}
+.reminder-help{margin:8px 0 0;font-size:13px;color:var(--muted)}.reminder-help a{color:var(--green);font-weight:700}

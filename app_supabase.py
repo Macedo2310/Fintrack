@@ -27,6 +27,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
 
+import moderation
 import teacher_templates
 import app as legacy  # reaproveita validações, IA, e-mail e conteúdo estático da 0.6.x (sem usar o SQLite)
 import backend_services
@@ -309,6 +310,7 @@ class OnboardingIn(BaseModel):
 @app.post("/api/auth/register")
 def register(b: RegisterIn, request: Request):
     rate_limit("register:" + client_key(request), 5, 3600)
+    moderate(None, b.name, kind="cadastro")
     if b.role not in ("aluno", "professor"):
         raise HTTPException(422, "Perfil inválido.")
     if not b.terms:
@@ -450,6 +452,7 @@ def onboarding_info(request: Request, t: str = ""):
 @app.post("/api/auth/google/complete")
 def onboarding_complete(b: OnboardingIn, request: Request):
     s = session(request)
+    moderate(s, b.name, kind="cadastro")
     if b.role not in ("aluno", "professor"):
         raise HTTPException(422, "Perfil inválido.")
     if not b.terms:
@@ -900,6 +903,7 @@ def message_send(cid: str, b: MessageIn, request: Request):
     rate_limit("ai-message:" + s.uid, 30, 3600)
     conv = one(sb.select("ai_conversations", s.token, id=f"eq.{cid}", select="id,title"))  # prova de posse (RLS)
     text, assistant_key = b.content.strip(), "assistant:" + b.request_key
+    moderate(s, text, kind="finbot")
     old = sb.select("ai_messages", s.token, request_key=f"eq.{b.request_key}", select="*")
     if old and (old[0]["content"] != text or old[0]["conversation_id"] != cid):
         raise HTTPException(409, "Esta tentativa já foi usada para outra mensagem.")
@@ -909,14 +913,17 @@ def message_send(cid: str, b: MessageIn, request: Request):
     if not old:
         sb.insert("ai_messages", {"conversation_id": cid, "user_id": s.uid, "content": text, "request_key": b.request_key}, s.token)
     hist = sb.select("ai_messages", s.token, conversation_id=f"eq.{cid}", select="role,content", order="created_at.desc", limit="20")[::-1]
-    if not legacy.ai_ready():
-        raise HTTPException(503, "A IA ainda não está configurada no servidor. Sua mensagem foi salva.")
-    try:
-        answer = legacy.call_ai([{"role": "system", "content": SYSTEM_PROMPT}] + hist)
-    except RuntimeError as e:
-        raise HTTPException(502, str(e))
-    except Exception:
-        raise HTTPException(502, "A IA não respondeu. Tente novamente.")
+    if moderation.self_harm(text):          # sofrimento intenso: acolhe e indica ajuda, sem depender da IA
+        answer = moderation.SUPPORT_REPLY
+    else:
+        if not legacy.ai_ready():
+            raise HTTPException(503, "A IA ainda não está configurada no servidor. Sua mensagem foi salva.")
+        try:
+            answer = legacy.call_ai([{"role": "system", "content": SYSTEM_PROMPT}] + hist)
+        except RuntimeError as e:
+            raise HTTPException(502, str(e))
+        except Exception:
+            raise HTTPException(502, "A IA não respondeu. Tente novamente.")
     try:
         msg = sb.insert("ai_messages", {"conversation_id": cid, "user_id": s.uid, "role": "assistant", "content": answer,
                                         "request_key": assistant_key}, service=True)[0]   # posse já provada acima
@@ -1040,6 +1047,25 @@ class CodeIn(BaseModel):
     code: str
 
 
+def moderate(s: Optional["Sess"], *texts: Optional[str], kind: str = "outro"):
+    """Bloqueia linguagem ofensiva e registra a ocorrência (repetições geram aviso na conta)."""
+    if any(moderation.offensive(t) for t in texts if t):
+        if s is not None:
+            try:
+                sb.rpc("report_abuse", {"p_kind": kind}, s.token)
+            except Exception:
+                logger.warning("Falha ao registrar conteúdo bloqueado")
+        raise HTTPException(422, moderation.BLOCK_MESSAGE)
+
+
+def quiz_texts(config: dict) -> list:
+    out = []
+    for q in (config or {}).get("questions") or []:
+        if isinstance(q, dict):
+            out += [str(q.get("q") or ""), str(q.get("why") or "")] + [str(o) for o in (q.get("options") or [])]
+    return out
+
+
 class ActivityIn(BaseModel):
     type: str; title: str = Field(min_length=3, max_length=120); config: dict
     due_date: Optional[str] = None; instructions: Optional[str] = Field(default=None, max_length=1000)
@@ -1086,13 +1112,16 @@ def classes(request: Request):
 def class_new(b: ClassIn, request: Request):
     s = session(request)
     require_role(s, "professor", "Apenas professores podem criar turmas.")
+    moderate(s, b.name, b.description, kind="turma")
     row = sb.insert("classes", {"teacher_id": s.uid, "name": b.name.strip(), "description": b.description}, s.token)[0]
     return {"id": row["id"], "code": row["join_code"]}
 
 
 @app.put("/api/classes/{cid}")
 def class_edit(cid: str, b: ClassIn, request: Request):
-    one(sb.update("classes", {"name": b.name.strip(), "description": b.description}, session(request).token, id=f"eq.{cid}"),
+    s = session(request)
+    moderate(s, b.name, b.description, kind="turma")
+    one(sb.update("classes", {"name": b.name.strip(), "description": b.description}, s.token, id=f"eq.{cid}"),
         "Turma não encontrada.")
     return {"status": "ok"}
 
@@ -1195,6 +1224,7 @@ def activity_new(cid: str, b: ActivityIn, request: Request):
     require_role(s, "professor", "Apenas professores lançam atividades.")
     if b.type not in ("desafio", "quiz"):
         raise HTTPException(422, "Tipo de atividade inválido.")
+    moderate(s, b.title, b.instructions, *quiz_texts(b.config), kind="atividade")
     return sb.rpc("create_activity", {"p_class_id": cid, "p_type": b.type, "p_title": b.title, "p_config": b.config,
                                       "p_due": parse_date(b.due_date).isoformat() if b.due_date else None,
                                       "p_instructions": clean(b.instructions)}, s.token)
@@ -1215,6 +1245,7 @@ def class_financial_summary(cid: str, request: Request, start: Optional[str] = N
 def assignment_new(cid: str, b: AssignmentIn, request: Request):
     s = session(request)
     require_role(s, "professor", "Apenas professores atribuem atividades.")
+    moderate(s, b.instructions, kind="atividade")
     if b.content_type != "aula":
         raise HTTPException(422, "Tipo de atividade inválido. Por enquanto, apenas aulas do curso podem ser atribuídas.")
     lesson = lesson_catalog(s).get(b.content_key)
@@ -1305,6 +1336,7 @@ def settings(b: SettingsIn, request: Request):
 @app.put("/api/profile")
 def profile(b: ProfileIn, request: Request):
     s = session(request)
+    moderate(s, b.name, kind="perfil")
     name = " ".join(b.name.split())
     one(sb.update("profiles", {"name": name}, s.token, id=f"eq.{s.uid}"))
     return {"status": "ok", "name": name}
